@@ -234,6 +234,26 @@ model AgentActivity {
 }
 
 // ============================================
+// Waitlist & Marketing
+// ============================================
+
+model WaitlistEntry {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String?
+  role        String?  // "founder" | "vc" | "other"
+  referredBy  String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([email])
+  @@index([createdAt])
+}
+
+// ============================================
 // Enums
 // ============================================
 
