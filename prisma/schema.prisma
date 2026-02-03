@@ -1,0 +1,335 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// Core Models
+// ============================================
+
+model Startup {
+  id            String   @id @default(cuid())
+  name          String
+  tagline       String
+  description   String
+  stage         Stage
+  industry      String
+  fundingAsk    Int
+  teamSize      Int
+  founderName   String
+  founderEmail  String
+  website       String?
+  deckUrl       String?
+  pitchVideo    String?
+  
+  status        StartupStatus @default(PENDING)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relations
+  analysis      Analysis?
+  vcMatches     VCMatch[]
+  messages      Message[]
+  coachingSessions CoachingSession[]
+  marketingCampaigns MarketingCampaign[]
+  agentActivities AgentActivity[]
+  
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Analysis {
+  id            String   @id @default(cuid())
+  startupId     String   @unique
+  startup       Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  
+  // Individual agent scores
+  financialScore    Int
+  technicalScore    Int
+  marketScore       Int
+  legalScore        Int
+  overallScore      Int
+  
+  // Detailed feedback (JSON)
+  financialFeedback  Json
+  technicalFeedback  Json
+  marketFeedback     Json
+  legalFeedback      Json
+  
+  // Results
+  valuation         BigInt
+  recommendation    Recommendation
+  summary           String
+  
+  // Metadata
+  analysisStartedAt DateTime
+  analysisCompletedAt DateTime?
+  analysisDuration  Int? // seconds
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([recommendation])
+}
+
+model VCMatch {
+  id          String   @id @default(cuid())
+  startupId   String
+  startup     Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  vcId        String
+  vc          VC       @relation(fields: [vcId], references: [id], onDelete: Cascade)
+  
+  interested      Boolean @default(false)
+  interestLevel   Int // 0-100
+  feedback        String?
+  
+  // VC persona agent response
+  personaResponse Json?
+  
+  status          MatchStatus @default(PENDING)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([startupId, vcId])
+  @@index([status])
+}
+
+model VC {
+  id            String   @id @default(cuid())
+  name          String
+  firmName      String
+  email         String   @unique
+  fundSize      String
+  focusAreas    String[] // Array of industries
+  stagePreference String[] // Array of stages
+  
+  investmentRangeMin  BigInt
+  investmentRangeMax  BigInt
+  
+  thesis        String
+  portfolio     String[] // Company names or URLs
+  
+  // AI Persona
+  personaName   String?
+  personaPersonality String?
+  personaStyle  String?
+  riskTolerance RiskTolerance @default(MODERATE)
+  priorities    String[] // What the persona values most
+  
+  // OpenAI Assistant ID for the persona
+  assistantId   String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  matches       VCMatch[]
+  
+  @@index([firmName])
+}
+
+// ============================================
+// Coaching & Mentorship
+// ============================================
+
+model CoachingSession {
+  id          String   @id @default(cuid())
+  startupId   String
+  startup     Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  
+  agentType   AgentType
+  threadId    String?  // OpenAI thread ID for persistent conversations
+  
+  messages    Json[]
+  actionItems Json[]
+  
+  nextCheckIn DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([startupId, agentType])
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  startupId   String
+  startup     Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  
+  role        MessageRole
+  content     String
+  agentType   AgentType?
+  
+  metadata    Json?
+  
+  createdAt   DateTime @default(now())
+  
+  @@index([startupId, createdAt])
+}
+
+// ============================================
+// Marketing Automation
+// ============================================
+
+model MarketingCampaign {
+  id          String   @id @default(cuid())
+  startupId   String
+  startup     Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  
+  type        CampaignType
+  status      CampaignStatus @default(DRAFT)
+  
+  title       String
+  description String?
+  
+  content     Json // Campaign-specific content
+  schedule    Json? // Publishing schedule
+  metrics     Json? // Performance metrics
+  
+  startDate   DateTime?
+  endDate     DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  completedAt DateTime?
+  
+  @@index([startupId, status])
+}
+
+// ============================================
+// Agent Activity Tracking
+// ============================================
+
+model AgentActivity {
+  id          String   @id @default(cuid())
+  startupId   String?
+  startup     Startup? @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  
+  agentName   String
+  agentType   AgentType
+  action      String
+  description String
+  
+  status      ActivityStatus @default(RUNNING)
+  result      String?
+  errorMessage String?
+  
+  metadata    Json?
+  
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+  duration    Int? // milliseconds
+  
+  @@index([startupId, agentType])
+  @@index([status])
+  @@index([startedAt])
+}
+
+// ============================================
+// Enums
+// ============================================
+
+enum Stage {
+  IDEA
+  MVP
+  GROWTH
+  SCALE
+}
+
+enum StartupStatus {
+  PENDING
+  ANALYZING
+  APPROVED
+  CONDITIONAL
+  REJECTED
+  FUNDED
+}
+
+enum Recommendation {
+  APPROVED
+  CONDITIONAL
+  REJECTED
+}
+
+enum MatchStatus {
+  PENDING
+  INTERESTED
+  PASSED
+  MEETING_SCHEDULED
+  TERM_SHEET
+  CLOSED
+}
+
+enum RiskTolerance {
+  CONSERVATIVE
+  MODERATE
+  AGGRESSIVE
+}
+
+enum AgentType {
+  FINANCIAL_ANALYST
+  TECHNICAL_DD
+  MARKET_RESEARCH
+  LEGAL_COMPLIANCE
+  VC_MATCHING
+  SYNTHESIS
+  
+  STRATEGIC_ADVISOR
+  PRODUCT_COACH
+  SALES_COACH
+  FUNDRAISING_COACH
+  MENTAL_HEALTH_COACH
+  TECHNICAL_ADVISOR
+  
+  CONTENT_STRATEGY
+  CONTENT_CREATOR
+  DISTRIBUTION
+  SEO
+  GROWTH_HACKING
+  ANALYTICS
+  
+  FUNDING_ALLOCATION
+  PORTFOLIO_MANAGEMENT
+  NETWORK_CONNECTOR
+  COMPLIANCE
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum CampaignType {
+  CONTENT
+  SOCIAL
+  EMAIL
+  SEO
+  PAID_ADS
+  PR
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  RUNNING
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum ActivityStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}

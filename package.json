@@ -10,10 +10,19 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@langchain/core": "^1.1.18",
+    "@langchain/openai": "^1.2.4",
+    "@prisma/client": "^7.3.0",
+    "ai": "^6.0.69",
     "framer-motion": "^12.31.0",
+    "langchain": "^1.2.16",
+    "nanoid": "^5.1.6",
     "next": "16.1.6",
+    "openai": "^6.17.0",
+    "prisma": "^7.3.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "zod": "^4.3.6",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
