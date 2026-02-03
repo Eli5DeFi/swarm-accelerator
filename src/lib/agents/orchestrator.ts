@@ -4,6 +4,8 @@ import { TechnicalDDAgent, type TechnicalAnalysis } from "./technical-dd";
 import { MarketResearchAgent, type MarketAnalysis } from "./market-research";
 import { LegalComplianceAgent, type LegalAnalysis } from "./legal-compliance";
 import { BlockchainExpertAgent, type BlockchainAnalysis } from "./industry/blockchain-expert";
+import { AIMLSpecialistAgent, type AIMLAnalysis } from "./industry/ai-ml-specialist";
+import { FinTechRegulatorAgent, type FinTechAnalysis } from "./industry/fintech-regulator";
 import { selectAgents, getAgentBreakdown, type AgentDefinition } from "./agent-registry";
 import { prisma } from "../prisma";
 
@@ -13,6 +15,8 @@ export interface CompleteAnalysis {
   market: MarketAnalysis;
   legal: LegalAnalysis;
   blockchain?: BlockchainAnalysis;
+  aiml?: AIMLAnalysis;
+  fintech?: FinTechAnalysis;
   industrySpecific?: Record<string, any>;
   agentBreakdown: {
     total: number;
@@ -91,18 +95,50 @@ export class AnalysisOrchestrator {
       
       // 5. Run industry-specific agents if needed
       let blockchain: BlockchainAnalysis | undefined;
+      let aiml: AIMLAnalysis | undefined;
+      let fintech: FinTechAnalysis | undefined;
       const industrySpecific: Record<string, any> = {};
+      
+      // Run industry-specific agents in parallel
+      const industryPromises: Promise<void>[] = [];
       
       for (const agent of selectedAgents) {
         if (agent.capability === "blockchain_analysis") {
-          const blockchainAgent = new BlockchainExpertAgent();
-          blockchain = await this.runWithTracking(startupId, "BLOCKCHAIN_EXPERT", () =>
-            blockchainAgent.analyze(startup)
+          industryPromises.push(
+            (async () => {
+              const blockchainAgent = new BlockchainExpertAgent();
+              blockchain = await this.runWithTracking(startupId, "BLOCKCHAIN_EXPERT", () =>
+                blockchainAgent.analyze(startup)
+              );
+            })()
           );
         }
-        // Add more industry agents here as they're implemented
-        // e.g., AI/ML, Healthcare, FinTech, etc.
+        
+        if (agent.capability === "ai_ml_evaluation") {
+          industryPromises.push(
+            (async () => {
+              const aimlAgent = new AIMLSpecialistAgent();
+              aiml = await this.runWithTracking(startupId, "AI_ML_SPECIALIST", () =>
+                aimlAgent.analyze(startup)
+              );
+            })()
+          );
+        }
+        
+        if (agent.capability === "fintech_regulation") {
+          industryPromises.push(
+            (async () => {
+              const fintechAgent = new FinTechRegulatorAgent();
+              fintech = await this.runWithTracking(startupId, "FINTECH_REGULATOR", () =>
+                fintechAgent.analyze(startup)
+              );
+            })()
+          );
+        }
       }
+      
+      // Wait for all industry agents to complete
+      await Promise.all(industryPromises);
       
       // 4. Synthesize results
       const synthesis = this.synthesizeAnalysis(financial, technical, market, legal);
@@ -154,6 +190,8 @@ export class AnalysisOrchestrator {
         market,
         legal,
         blockchain,
+        aiml,
+        fintech,
         industrySpecific,
         agentBreakdown,
         synthesis,
