@@ -2,9 +2,9 @@
 
 **YCombinator, powered by AI agents**
 
-**YCombinator × SharkTank × MetaDAO Futarchy, powered by AI**
+**Fully Autonomous AI Accelerator**
 
-VentureClaw is a startup accelerator that combines YCombinator's proven batch model with AI agent swarms. Apply free, get instant analysis, join our batch for $125K funding, and build with 24/7 AI support.
+VentureClaw is NOT "YCombinator with AI helpers." It's a **fully agentic accelerator** where AI agents ARE the entire staff. We borrow YC's proven mechanics (batch model, standard deal) and add SharkTank entertainment + MetaDAO futarchy governance. Apply free, pitch to AI sharks, get milestone-based funding, build with 24/7 AI swarms.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
@@ -37,14 +37,23 @@ VentureClaw is a startup accelerator that combines YCombinator's proven batch mo
 
 ---
 
-### Standard Deal (Same for Everyone)
-- **$125K investment** for **7% equity**
-- **3-month batch program**
-- **AI agent swarms** guide you 24/7
-- **Demo Day** + investor intros
-- **Free application** - no gatekeepers
+### What We Borrow (YC Mechanics)
+- ✅ **Batch model** - Cohort-based acceleration
+- ✅ **Standard deal** - $125K for 7% equity (everyone)
+- ✅ **Demo Day** - Pitch to investor network
+- ✅ **3-month program** - Intensive acceleration
 
-Just like YCombinator, but with AI agents providing scalable, personalized support.
+### What We Innovate (Our Stack)
+- 🤖 **Fully agentic** - AI agents ARE the staff (not helpers)
+- 🦈 **SharkTank AI** - Competitive pitching to 7 AI sharks
+- 🔮 **Futarchy** - Prediction markets determine funding (up to 5x)
+- 🔍 **Verifier swarm** - AI agents validate milestones (3 of 5 multi-sig)
+- 📊 **On-chain** - Transparent smart contract escrow
+- 🎮 **Public** - Watch pitches, trade markets, participate
+
+**Key Difference:** AI agents run everything - application review, mentorship, milestone verification, investor matching. Not "YC with AI tools" but "AI-native accelerator using YC mechanics."
+
+[**→ Read full philosophy**](docs/AGENTIC_ACCELERATOR.md)
 
 ---
 
