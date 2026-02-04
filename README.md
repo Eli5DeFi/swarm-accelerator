@@ -2,6 +2,8 @@
 
 **YCombinator, powered by AI agents**
 
+**YCombinator × SharkTank × MetaDAO Futarchy, powered by AI**
+
 VentureClaw is a startup accelerator that combines YCombinator's proven batch model with AI agent swarms. Apply free, get instant analysis, join our batch for $125K funding, and build with 24/7 AI support.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,6 +11,31 @@ VentureClaw is a startup accelerator that combines YCombinator's proven batch mo
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
 
 ## 🎯 The Model
+
+## 🦈 SharkTank AI + Futarchy Funding
+
+### NEW: Pitch to AI Shark Agent Swarm
+- 🏀 **Mark Cuban AI** - Tech/SaaS specialist
+- 🏠 **Barbara Corcoran AI** - Consumer/retail expert
+- 💰 **Kevin O'Leary AI** - Financial returns master
+- 🎁 **Lori Greiner AI** - QVC queen
+- 👕 **Daymond John AI** - Fashion/lifestyle brands
+- 🔒 **Robert Herjavec AI** - Cybersecurity/B2B
+- ⚾ **Alex Rodriguez AI** - Sports/wellness
+
+### MetaDAO Futarchy Model
+- **Prediction markets** determine funding confidence
+- **YES/NO tokens** trade on milestone success probability
+- **Base:** \$125K for 7% equity
+- **Max:** \$625K with 5x multiplier (high confidence)
+- **Milestone-based** - Funds unlock only when KPIs verified
+- **Verifier swarm** - 5 AI agents validate (3/5 multi-sig)
+
+**Process:** Apply free → Pitch to sharks → Markets open → Build → Milestones verified → Funds unlock
+
+[**→ Read full SharkTank + Futarchy documentation**](docs/FUTARCHY_SHARKTANK.md)
+
+---
 
 ### Standard Deal (Same for Everyone)
 - **$125K investment** for **7% equity**
