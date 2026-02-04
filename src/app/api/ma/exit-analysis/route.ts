@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         industry: body.industry,
         stage: body.stage,
         revenue: body.revenue,
-        status: 'analyzing',
+        status: 'ANALYZING',
       },
     });
 
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     await prisma.exitAnalysis.update({
       where: { id: exitAnalysis.id },
       data: {
-        status: 'complete',
+        status: 'COMPLETE',
         valuationLow: report.valuation.recommendedRange.low,
         valuationBase: report.valuation.recommendedRange.base,
         valuationHigh: report.valuation.recommendedRange.high,

@@ -17,6 +17,7 @@
     "setup": "./scripts/setup-dev.sh"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.72.1",
     "@auth/prisma-adapter": "^2.0.0",
     "@heroicons/react": "^2.2.0",
     "@langchain/core": "^1.1.18",
@@ -34,7 +35,7 @@
     "langchain": "^1.2.16",
     "nanoid": "^5.1.6",
     "next": "16.1.6",
-    "next-auth": "^4.24.13",
+    "next-auth": "^5.0.0-beta.30",
     "openai": "^6.17.0",
     "prisma": "^6.5.0",
     "react": "19.2.3",

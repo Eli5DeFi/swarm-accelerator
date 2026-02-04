@@ -3,13 +3,6 @@ import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 
-// Disable body parsing for webhooks
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.text();

@@ -131,7 +131,7 @@ function formatPitchResults(analysis: any): string {
   output += chalk.bold('Recommendation: ');
   const recColor = analysis.recommendation === 'APPROVED' ? 'green' : 
                    analysis.recommendation === 'CONDITIONAL' ? 'yellow' : 'red';
-  output += chalk[recColor as any].bold(analysis.recommendation) + '\n\n';
+  output += (chalk as any)[recColor].bold(analysis.recommendation) + '\n\n';
   
   output += chalk.bold('Agent Scores:\n');
   output += `  Financial: ${analysis.financialScore}/100\n`;

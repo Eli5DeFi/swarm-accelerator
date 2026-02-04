@@ -67,10 +67,11 @@ export async function POST(request: Request) {
     }
 
     // TODO: Fetch real offer data
-    const offerData = {
+    const offerDataMap: Record<string, { amount: number; equity: number; dealType: string }> = {
       offer_1: { amount: Math.floor(pitch.fundingAsk * 0.8), equity: 15, dealType: 'SAFE' },
       offer_2: { amount: pitch.fundingAsk, equity: 20, dealType: 'Equity' },
-    }[offerId];
+    };
+    const offerData = offerDataMap[offerId as string];
 
     if (!offerData) {
       return NextResponse.json(

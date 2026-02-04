@@ -4,12 +4,13 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Check if startup exists
     const startup = await prisma.startup.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
     
     if (!startup) {
@@ -34,7 +35,7 @@ export async function POST(
     }
     
     // Trigger analysis
-    const analysis = await analyzeStartup(params.id);
+    const analysis = await analyzeStartup(id);
     
     return NextResponse.json({
       success: true,

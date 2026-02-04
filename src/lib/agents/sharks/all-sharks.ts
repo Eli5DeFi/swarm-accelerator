@@ -138,7 +138,7 @@ JSON: interestLevel, strengths, concerns, questions, reasoning`;
         interestLevel: 40,
         strengths: [],
         concerns: ['Show me the money'],
-        questions: ['Where's the profit?'],
+        questions: ["Where's the profit?"],
         reasoning: response,
       };
     }
@@ -280,7 +280,7 @@ JSON: interestLevel, strengths, concerns, questions, reasoning`;
         interestLevel: 50,
         strengths: [],
         concerns: [],
-        questions: ['What's your brand story?'],
+        questions: ["What's your brand story?"],
         reasoning: response,
       };
     }

@@ -1,13 +1,12 @@
-import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getSession } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import DashboardClient from './DashboardClient';
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
 
-  if (!session?.user) {
+  if (!session || !session.user) {
     redirect('/auth/signin');
   }
 

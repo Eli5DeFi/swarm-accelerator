@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -16,11 +16,12 @@ export async function POST(
     }
 
     const { offerId } = await request.json();
+    const { id } = await params;
 
     // Verify pitch exists and belongs to user
     const pitch = await prisma.startup.findUnique({
       where: {
-        id: params.id,
+        id,
         userId: session.user.id,
       },
       include: {
@@ -41,10 +42,11 @@ export async function POST(
 
     // TODO: Fetch real offer details
     // For now, use mock offer data
-    const offerData = {
+    const offerDataMap: Record<string, { amount: number; equity: number; dealType: string }> = {
       offer_1: { amount: Math.floor(pitch.fundingAsk * 0.8), equity: 15, dealType: 'SAFE' },
       offer_2: { amount: pitch.fundingAsk, equity: 20, dealType: 'Equity' },
-    }[offerId];
+    };
+    const offerData = offerDataMap[offerId as string];
 
     if (!offerData) {
       return NextResponse.json({ error: 'Invalid offer ID' }, { status: 400 });

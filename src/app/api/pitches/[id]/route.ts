@@ -3,11 +3,12 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const startup = await prisma.startup.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         analysis: true,
         vcMatches: {
@@ -53,9 +54,10 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     
     // Only allow updating certain fields
@@ -76,7 +78,7 @@ export async function PATCH(
     }
     
     const startup = await prisma.startup.update({
-      where: { id: params.id },
+      where: { id },
       data: updates,
       include: {
         analysis: true,

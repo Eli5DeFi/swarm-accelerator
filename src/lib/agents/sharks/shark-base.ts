@@ -142,7 +142,7 @@ Format as JSON:
 }`;
 
     const response = await this.generateResponse(this.getSystemPrompt(), prompt);
-    
+
     try {
       const analysis = JSON.parse(response);
       return {
@@ -225,4 +225,3 @@ Respond authentically as Mark Cuban. Be direct, focus on metrics and scalability
 }
 
 // Export all shark agents
-export { SharkAgent, SharkPersonality, SharkAnalysis, SharkOffer, Pitch };
