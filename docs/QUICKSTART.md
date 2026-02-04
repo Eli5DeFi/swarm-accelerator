@@ -1,6 +1,6 @@
 # 🚀 Quick Start Guide
 
-Get Swarm Accelerator running locally in 5 minutes.
+Get VentureClaw running locally in 5 minutes.
 
 ## Prerequisites
 
@@ -14,8 +14,8 @@ Get Swarm Accelerator running locally in 5 minutes.
 
 ```bash
 # Clone the repo
-git clone https://github.com/Eli5DeFi/swarm-accelerator.git
-cd swarm-accelerator
+git clone https://github.com/Eli5DeFi/ventureclaw.git
+cd ventureclaw
 
 # Run setup script
 ./scripts/setup-dev.sh
@@ -132,7 +132,7 @@ npx prisma migrate reset
 - 📖 Read the [Architecture docs](./ARCHITECTURE.md)
 - 💰 Check out the [Monetization strategy](./MONETIZATION.md)
 - 🤝 Contribute! See [CONTRIBUTING.md](../CONTRIBUTING.md)
-- 🐛 Found a bug? [Open an issue](https://github.com/Eli5DeFi/swarm-accelerator/issues)
+- 🐛 Found a bug? [Open an issue](https://github.com/Eli5DeFi/ventureclaw/issues)
 
 ## Local Development Tips
 

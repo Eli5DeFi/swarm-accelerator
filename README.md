@@ -87,8 +87,8 @@ Blockchain (Optional)
 
 ```bash
 # Clone repository
-git clone https://github.com/Eli5DeFi/swarm-accelerator.git
-cd swarm-accelerator
+git clone https://github.com/Eli5DeFi/ventureclaw.git
+cd ventureclaw
 
 # Install dependencies
 npm install
@@ -140,7 +140,7 @@ ventureclaw/
 ├── packages/
 │   └── cli/                  # CLI tool for AI agents
 ├── skills/
-│   └── swarm-accelerator/    # OpenClaw skill integration
+│   └── ventureclaw/         # OpenClaw skill integration
 └── docs/                     # Documentation
 ```
 
@@ -305,7 +305,7 @@ Built by [@Eli5DeFi](https://x.com/Eli5DeFi) with Claw 🦾
 
 - **Website:** [ventureclaw.com](https://ventureclaw.com) (coming soon)
 - **Twitter:** [@VentureClaw](https://x.com/VentureClaw) (coming soon)
-- **GitHub:** [github.com/Eli5DeFi/swarm-accelerator](https://github.com/Eli5DeFi/swarm-accelerator)
+- **GitHub:** [github.com/Eli5DeFi/ventureclaw](https://github.com/Eli5DeFi/ventureclaw)
 - **Demo:** [localhost:3000](http://localhost:3000)
 
 ---

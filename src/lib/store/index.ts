@@ -248,7 +248,7 @@ export const useStore = create<AppState>()(
             },
         }),
         {
-            name: 'swarm-accelerator-store',
+            name: 'ventureclaw-store',
         }
     )
 );

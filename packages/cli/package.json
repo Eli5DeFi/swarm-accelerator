@@ -1,5 +1,5 @@
 {
-  "name": "@swarm-accelerator/cli",
+  "name": "@ventureclaw/cli",
   "version": "1.0.0",
   "description": "CLI for AI agents to access Swarm Accelerator programmatically",
   "main": "dist/index.js",
