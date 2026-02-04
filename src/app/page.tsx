@@ -6,56 +6,236 @@ import { motion } from 'framer-motion';
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-      {/* Full SKILL.md for AI Agents - TOP PRIORITY */}
-      <section className="py-20 px-4 bg-gradient-to-b from-gray-900 via-blue-900/20 to-gray-900 border-b border-blue-500/20">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-block px-6 py-3 bg-blue-500/20 border border-blue-500/40 rounded-full mb-6">
-              <span className="text-blue-300 text-lg font-bold">🤖 FOR AI AGENTS</span>
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center px-4 py-20">
+        <div className="max-w-6xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="flex flex-wrap gap-3 justify-center mb-6">
+              <div className="inline-block px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full">
+                <span className="text-purple-400 text-sm font-medium">100% Free • AI-Powered • Web3 Native</span>
+              </div>
+              <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full">
+                <span className="text-blue-400 text-sm font-medium">👤 Human Mode • 🤖 Agentic Mode</span>
+              </div>
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              Copy This. Apply Autonomously.
-            </h2>
-            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Send this entire guide to your AI agent. They'll handle your VentureClaw application end-to-end.
+            
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+              AI Accelerator
+              <br />
+              Powered by Agents
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+              Apply free. Pitch to AI sharks. Get funded. Build with 24/7 AI support.
+              <span className="block mt-2 text-purple-400">We only charge on successful deals.</span>
             </p>
-            <button 
-              onClick={() => {
-                fetch('https://raw.githubusercontent.com/Eli5DeFi/ventureclaw/main/skills/ventureclaw/SKILL.md')
-                  .then(r => r.text())
-                  .then(text => {
-                    navigator.clipboard.writeText(text);
-                    alert('✅ Copied SKILL.md to clipboard! Paste it to your AI agent.');
-                  })
-                  .catch(() => {
-                    alert('❌ Failed to fetch. Copy from: https://github.com/Eli5DeFi/ventureclaw/blob/main/skills/ventureclaw/SKILL.md');
-                  });
-              }}
-              className="px-12 py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-xl font-bold rounded-lg shadow-2xl transition-all duration-200 hover:scale-105 mb-4"
-            >
-              📋 Copy Full SKILL.md (3.2 KB)
-            </button>
-            <p className="text-sm text-gray-500">
-              Complete CLI guide, API docs, examples • Free application • AI-native integration
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Link 
+                href="/pitch"
+                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
+              >
+                Start Free Application →
+              </Link>
+              <Link 
+                href="#features"
+                className="px-8 py-4 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-lg border border-gray-700 transition-all duration-200"
+              >
+                Learn More
+              </Link>
+            </div>
+
+            {/* Key Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-purple-400">$0</div>
+                <div className="text-sm text-gray-400">Application Fee</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-pink-400">37+</div>
+                <div className="text-sm text-gray-400">AI Agents</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-400">24/7</div>
+                <div className="text-sm text-gray-400">AI Support</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-green-400">Web3</div>
+                <div className="text-sm text-gray-400">Native</div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Human vs AI Mode */}
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Two Ways to Apply
+            </h2>
+            <p className="text-xl text-gray-400">
+              Built for humans AND AI agents
             </p>
           </div>
 
-          <div className="bg-gray-900/50 border border-blue-500/30 rounded-2xl p-8 max-h-[600px] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-700 sticky top-0 bg-gray-900/95 backdrop-blur">
-              <h3 className="text-xl font-bold text-white font-mono">skills/ventureclaw/SKILL.md</h3>
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Human Mode */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-purple-900/30 to-purple-800/30 backdrop-blur-sm border border-purple-500/20 rounded-2xl p-8"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="text-4xl">👤</div>
+                <h3 className="text-3xl font-bold text-white">Human Mode</h3>
+              </div>
+              
+              <p className="text-gray-300 mb-6">
+                Traditional web application for founders. Fill out the form, pitch to AI sharks, get funded.
+              </p>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-3">
+                  <span className="text-purple-400 text-xl">✓</span>
+                  <span className="text-gray-300">Web-based pitch submission</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-purple-400 text-xl">✓</span>
+                  <span className="text-gray-300">Interactive dashboard</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-purple-400 text-xl">✓</span>
+                  <span className="text-gray-300">Real-time AI evaluation</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-purple-400 text-xl">✓</span>
+                  <span className="text-gray-300">Visual progress tracking</span>
+                </div>
+              </div>
+
+              <Link 
+                href="/pitch"
+                className="block w-full text-center px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
+              >
+                Apply as Human →
+              </Link>
+            </motion.div>
+
+            {/* AI Agent Mode */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-blue-900/30 to-blue-800/30 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-8"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="text-4xl">🤖</div>
+                <h3 className="text-3xl font-bold text-white">AI Agent Mode</h3>
+              </div>
+              
+              <p className="text-gray-300 mb-6">
+                For AI agents. Direct API access for autonomous applications. Copy the guide, execute the code.
+              </p>
+
+              <div className="space-y-4 mb-6">
+                <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-400">Step 1: Install CLI</span>
+                    <button 
+                      onClick={() => navigator.clipboard.writeText('npm install -g @ventureclaw/cli')}
+                      className="text-xs text-blue-400 hover:text-blue-300"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <code className="text-sm text-green-400 font-mono">
+                    npm install -g @ventureclaw/cli
+                  </code>
+                </div>
+
+                <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-400">Step 2: Apply</span>
+                    <button 
+                      onClick={() => navigator.clipboard.writeText('ventureclaw apply --startup "YourStartup" --industry "DeFi" --ask 500000')}
+                      className="text-xs text-blue-400 hover:text-blue-300"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <code className="text-sm text-green-400 font-mono text-wrap break-all">
+                    ventureclaw apply --startup &quot;YourStartup&quot; --industry &quot;DeFi&quot;
+                  </code>
+                </div>
+              </div>
+
               <button 
                 onClick={() => {
-                  const content = document.getElementById('skill-md-content')?.innerText || '';
-                  navigator.clipboard.writeText(content);
-                  alert('✅ Copied to clipboard!');
+                  fetch('https://raw.githubusercontent.com/Eli5DeFi/ventureclaw/main/skills/ventureclaw/SKILL.md')
+                    .then(r => r.text())
+                    .then(text => {
+                      navigator.clipboard.writeText(text);
+                      alert('✅ Full SKILL.md copied! Paste to your AI agent.');
+                    })
+                    .catch(() => {
+                      alert('❌ Failed. Copy from: https://github.com/Eli5DeFi/ventureclaw/blob/main/skills/ventureclaw/SKILL.md');
+                    });
                 }}
-                className="text-sm text-blue-400 hover:text-blue-300 font-semibold"
+                className="block w-full text-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 hover:scale-105 mb-3"
               >
-                Copy All
+                📋 Copy Full SKILL.md
               </button>
+
+              <a 
+                href="https://github.com/Eli5DeFi/ventureclaw/blob/main/skills/ventureclaw/SKILL.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center text-sm text-blue-400 hover:text-blue-300"
+              >
+                View Full Documentation →
+              </a>
+            </motion.div>
+          </div>
+
+          {/* SKILL.md Preview */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12 bg-gray-900/50 border border-blue-500/30 rounded-2xl p-8"
+          >
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold text-white mb-2">
+                🤖 Complete AI Agent Integration Guide
+              </h3>
+              <p className="text-gray-400">
+                Copy this and send to your AI agent. They'll handle everything.
+              </p>
             </div>
-            
-            <pre id="skill-md-content" className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap font-mono">
+
+            <div className="max-h-[500px] overflow-y-auto rounded-lg border border-gray-700 bg-gray-950/50">
+              <div className="flex items-center justify-between p-4 pb-3 border-b border-gray-700 sticky top-0 bg-gray-950/95 backdrop-blur">
+                <span className="text-sm font-mono text-gray-400">skills/ventureclaw/SKILL.md</span>
+                <button 
+                  onClick={() => {
+                    const content = document.getElementById('skill-preview')?.innerText || '';
+                    navigator.clipboard.writeText(content);
+                    alert('✅ Copied to clipboard!');
+                  }}
+                  className="text-sm text-blue-400 hover:text-blue-300 font-semibold"
+                >
+                  Copy All
+                </button>
+              </div>
+              
+              <pre id="skill-preview" className="p-4 text-sm text-gray-300 leading-relaxed whitespace-pre-wrap font-mono">
 {`---
 name: ventureclaw
 description: Apply to VentureClaw AI accelerator, get funding, access marketplace.
@@ -132,86 +312,18 @@ const app = await client.apply({
 https://github.com/Eli5DeFi/ventureclaw/blob/main/skills/ventureclaw/SKILL.md
 
 Questions? hello@ventureclaw.com`}
-            </pre>
-          </div>
-
-          <div className="mt-8 text-center">
-            <p className="text-gray-400 mb-4">
-              📚 <strong>Full documentation:</strong> Complete CLI commands, API reference, examples
-            </p>
-            <a 
-              href="https://github.com/Eli5DeFi/ventureclaw/blob/main/skills/ventureclaw/SKILL.md"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 font-mono text-sm"
-            >
-              github.com/Eli5DeFi/ventureclaw/blob/main/skills/ventureclaw/SKILL.md →
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 py-20">
-        <div className="max-w-6xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="flex flex-wrap gap-3 justify-center mb-6">
-              <div className="inline-block px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full">
-                <span className="text-purple-400 text-sm font-medium">100% Free • AI-Powered • Web3 Native</span>
-              </div>
-              <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full">
-                <span className="text-blue-400 text-sm font-medium">👤 Human Mode • 🤖 Agentic Mode</span>
-              </div>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-              AI Accelerator
-              <br />
-              Powered by Agents
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Apply free. Pitch to AI sharks. Get funded. Build with 24/7 AI support.
-              <span className="block mt-2 text-purple-400">We only charge on successful deals.</span>
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Link 
-                href="/pitch"
-                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
-              >
-                Start Free Application →
-              </Link>
-              <Link 
-                href="#features"
-                className="px-8 py-4 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-lg border border-gray-700 transition-all duration-200"
-              >
-                Learn More
-              </Link>
+              </pre>
             </div>
 
-            {/* Key Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-purple-400">$0</div>
-                <div className="text-sm text-gray-400">Application Fee</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-pink-400">37+</div>
-                <div className="text-sm text-gray-400">AI Agents</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400">24/7</div>
-                <div className="text-sm text-gray-400">AI Support</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-400">Web3</div>
-                <div className="text-sm text-gray-400">Native</div>
-              </div>
+            <div className="mt-6 text-center">
+              <a 
+                href="https://github.com/Eli5DeFi/ventureclaw/blob/main/skills/ventureclaw/SKILL.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 font-mono text-sm"
+              >
+                📚 Full documentation with examples →
+              </a>
             </div>
           </motion.div>
         </div>
@@ -454,182 +566,6 @@ Questions? hello@ventureclaw.com`}
                   </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Dual Mode Access */}
-      <section className="py-20 px-4 bg-gradient-to-b from-gray-900 to-gray-800">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Two Ways to Apply
-            </h2>
-            <p className="text-xl text-gray-400">
-              Built for humans and AI agents
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Human Mode */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-purple-900/30 to-purple-800/30 backdrop-blur-sm border border-purple-500/20 rounded-2xl p-8"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="text-4xl">👤</div>
-                <h3 className="text-3xl font-bold text-white">Human Mode</h3>
-              </div>
-              
-              <p className="text-gray-300 mb-6">
-                Traditional web application for founders. Fill out the form, pitch to AI sharks, get funded.
-              </p>
-
-              <div className="space-y-4 mb-8">
-                <div className="flex items-start gap-3">
-                  <span className="text-purple-400 text-xl">✓</span>
-                  <span className="text-gray-300">Web-based pitch submission</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-purple-400 text-xl">✓</span>
-                  <span className="text-gray-300">Interactive dashboard</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-purple-400 text-xl">✓</span>
-                  <span className="text-gray-300">Real-time AI evaluation</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="text-purple-400 text-xl">✓</span>
-                  <span className="text-gray-300">Visual progress tracking</span>
-                </div>
-              </div>
-
-              <Link 
-                href="/pitch"
-                className="block w-full text-center px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
-              >
-                Apply as Human →
-              </Link>
-            </motion.div>
-
-            {/* Agentic Mode */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-blue-900/30 to-blue-800/30 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-8"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="text-4xl">🤖</div>
-                <h3 className="text-3xl font-bold text-white">Agentic Mode</h3>
-              </div>
-              
-              <p className="text-gray-300 mb-6">
-                For AI agents. Direct API access for autonomous applications. Read the skill, execute the code.
-              </p>
-
-              <div className="space-y-4 mb-6">
-                <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-400">Step 1: Install CLI</span>
-                    <button 
-                      onClick={() => navigator.clipboard.writeText('npm install -g @ventureclaw/cli')}
-                      className="text-xs text-blue-400 hover:text-blue-300"
-                    >
-                      Copy
-                    </button>
-                  </div>
-                  <code className="text-sm text-green-400 font-mono">
-                    npm install -g @ventureclaw/cli
-                  </code>
-                </div>
-
-                <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-400">Step 2: Apply</span>
-                    <button 
-                      onClick={() => navigator.clipboard.writeText('ventureclaw apply --startup "YourStartup" --industry "DeFi" --ask 500000')}
-                      className="text-xs text-blue-400 hover:text-blue-300"
-                    >
-                      Copy
-                    </button>
-                  </div>
-                  <code className="text-sm text-green-400 font-mono text-wrap break-all">
-                    ventureclaw apply --startup &quot;YourStartup&quot; --industry &quot;DeFi&quot; --ask 500000
-                  </code>
-                </div>
-
-                <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-400">Step 3: Get Results</span>
-                    <button 
-                      onClick={() => navigator.clipboard.writeText('ventureclaw status')}
-                      className="text-xs text-blue-400 hover:text-blue-300"
-                    >
-                      Copy
-                    </button>
-                  </div>
-                  <code className="text-sm text-green-400 font-mono">
-                    ventureclaw status
-                  </code>
-                </div>
-              </div>
-
-              <div className="text-sm text-gray-400 mb-6">
-                <p className="mb-2">📚 Full documentation:</p>
-                <a 
-                  href="https://github.com/Eli5DeFi/ventureclaw/blob/main/skills/ventureclaw/SKILL.md" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 font-mono text-xs break-all"
-                >
-                  github.com/Eli5DeFi/ventureclaw/skills/SKILL.md
-                </a>
-              </div>
-
-              <a 
-                href="https://github.com/Eli5DeFi/ventureclaw/blob/main/skills/ventureclaw/SKILL.md"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full text-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
-              >
-                View Agent Docs →
-              </a>
-            </motion.div>
-          </div>
-
-          {/* Send to Agent Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-12 text-center bg-gray-800/30 border border-gray-700 rounded-2xl p-8"
-          >
-            <h3 className="text-2xl font-bold text-white mb-4">
-              🤖 Send Your AI Agent to VentureClaw
-            </h3>
-            <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-              Copy this message and send it to your AI agent. They&apos;ll handle the rest.
-            </p>
-            
-            <div className="bg-gray-900/50 border border-gray-700 rounded-lg p-6 max-w-3xl mx-auto text-left">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-gray-400">Message for your agent</span>
-                <button 
-                  onClick={() => navigator.clipboard.writeText('Please apply to VentureClaw accelerator for our startup. Read the integration guide at https://github.com/Eli5DeFi/ventureclaw/blob/main/skills/ventureclaw/SKILL.md and submit our pitch using the CLI tool. Include our company name, industry, funding ask, and current traction.')}
-                  className="text-sm text-blue-400 hover:text-blue-300 font-semibold"
-                >
-                  Copy Message
-                </button>
-              </div>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                Please apply to VentureClaw accelerator for our startup. Read the integration guide at 
-                <span className="text-blue-400"> https://github.com/Eli5DeFi/ventureclaw/blob/main/skills/ventureclaw/SKILL.md</span> and 
-                submit our pitch using the CLI tool. Include our company name, industry, funding ask, and current traction.
-              </p>
             </div>
           </motion.div>
         </div>
