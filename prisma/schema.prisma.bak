@@ -11,72 +11,6 @@ datasource db {
 }
 
 // ============================================
-// Authentication (NextAuth.js)
-// ============================================
-
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  
-  // Subscription
-  tier          String    @default("free") // "free" | "startup" | "enterprise"
-  apiKey        String?   @unique
-  stripeCustomerId String?
-  
-  // Relations
-  accounts      Account[]
-  sessions      Session[]
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  
-  @@index([email])
-  @@index([apiKey])
-}
-
-model Account {
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([provider, providerAccountId])
-}
-
-model Session {
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@id([identifier, token])
-}
-
-// ============================================
 // Core Models
 // ============================================
 
@@ -131,7 +65,7 @@ model Analysis {
   legalFeedback      Json
   
   // Results
-  valuation         Int
+  valuation         BigInt
   recommendation    Recommendation
   summary           String
   
@@ -178,8 +112,8 @@ model VC {
   focusAreas    String[] // Array of industries
   stagePreference String[] // Array of stages
   
-  investmentRangeMin  Int
-  investmentRangeMax  Int
+  investmentRangeMin  BigInt
+  investmentRangeMax  BigInt
   
   thesis        String
   portfolio     String[] // Company names or URLs
@@ -330,14 +264,14 @@ model ExitAnalysis {
   companyName     String
   industry        String
   stage           String
-  revenue         Int
+  revenue         BigInt
   
   // Analysis results
   status          ExitStatus @default(ANALYZING)
   
-  valuationLow    Int?
-  valuationBase   Int?
-  valuationHigh   Int?
+  valuationLow    BigInt?
+  valuationBase   BigInt?
+  valuationHigh   BigInt?
   
   readinessScore  Int? // 0-100
   recommendation  String?
@@ -378,14 +312,14 @@ model Project {
   
   // Fundraising
   fundingType     FundingType
-  amountSeeking   Int
-  valuation       Int?
-  tokenPrice      Float?
-  minTicketSize   Int
-  maxTicketSize   Int
+  amountSeeking   BigInt
+  valuation       BigInt?
+  tokenPrice      Decimal?
+  minTicketSize   BigInt
+  maxTicketSize   BigInt
   
   // Financials
-  revenue         Int
+  revenue         BigInt
   revenueGrowth   Int
   customers       Int
   teamSize        Int
@@ -432,8 +366,8 @@ model Investor {
   // Criteria
   focusAreas      String[]
   stagePreference String[]
-  checkSizeMin    Int
-  checkSizeMax    Int
+  checkSizeMin    BigInt
+  checkSizeMax    BigInt
   geography       String[]
   fundingTypes    FundingType[]
   
@@ -513,8 +447,8 @@ model Asset {
   companyId       String?
   
   // Supply
-  totalSupply     Int?
-  circulatingSupply Int?
+  totalSupply     BigInt?
+  circulatingSupply BigInt?
   
   // Token-specific
   contractAddress String?
@@ -547,14 +481,14 @@ model Order {
   side            OrderSide
   orderType       OrderType
   
-  quantity        Float
-  price           Float?
+  quantity        Decimal
+  price           Decimal?
   
-  minQuantity     Float?
-  maxQuantity     Float?
+  minQuantity     Decimal?
+  maxQuantity     Decimal?
   
   status          OrderStatus @default(OPEN)
-  filledQuantity  Float @default(0)
+  filledQuantity  Decimal @default(0)
   
   isPublic        Boolean @default(true)
   
@@ -585,16 +519,16 @@ model Trade {
   buyerId         String
   sellerId        String
   
-  quantity        Float
-  price           Float
-  totalValue      Float
+  quantity        Decimal
+  price           Decimal
+  totalValue      Decimal
   
   settlementStatus SettlementStatus @default(PENDING)
   settlementMethod SettlementMethod
   settlementTxHash String?
   
-  buyerFee        Float
-  sellerFee       Float
+  buyerFee        Decimal
+  sellerFee       Decimal
   
   executedAt      DateTime @default(now())
   settledAt       DateTime?

@@ -1,297 +1,410 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import {
-  CheckIcon,
-  SparklesIcon,
-  RocketLaunchIcon,
-  BuildingOfficeIcon,
-} from "@heroicons/react/24/outline";
-import { SUBSCRIPTION_TIERS } from "@/lib/stripe";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import Link from 'link';
 
-export default function PricingPage() {
-  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly");
-  const [isLoading, setIsLoading] = useState<string | null>(null);
+export default function Pricing() {
+  const [mode, setMode] = useState<'human' | 'agent'>('human');
 
-  const handleSubscribe = async (tier: "starter" | "growth", period: "monthly" | "yearly") => {
-    setIsLoading(tier);
-
-    try {
-      const priceId = period === "yearly" 
-        ? SUBSCRIPTION_TIERS[tier].yearlyPriceId 
-        : SUBSCRIPTION_TIERS[tier].priceId;
-
-      const response = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          priceId,
-          tier,
-          billingPeriod: period,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.success && result.url) {
-        window.location.href = result.url;
-      } else {
-        console.error("Checkout failed:", result.error);
-        alert("Failed to start checkout. Please try again.");
-      }
-    } catch (error) {
-      console.error("Checkout error:", error);
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(null);
-    }
-  };
-
-  const tiers = [
+  const humanPlans = [
     {
-      id: "free",
-      name: SUBSCRIPTION_TIERS.free.name,
-      icon: SparklesIcon,
-      price: 0,
-      description: "Perfect for exploring the platform",
-      features: SUBSCRIPTION_TIERS.free.features,
-      cta: "Get Started Free",
-      ctaLink: "/pitch",
+      name: 'Free',
+      price: '$0',
+      period: '/month',
+      description: 'For individual founders testing the platform',
+      features: [
+        '1 pitch analysis/month',
+        'Basic financial analysis',
+        'Community support',
+        'Public results (anonymized)',
+      ],
+      cta: 'Get Started',
+      href: '/pitch',
       popular: false,
     },
     {
-      id: "starter",
-      name: SUBSCRIPTION_TIERS.starter.name,
-      icon: RocketLaunchIcon,
-      price: billingPeriod === "monthly" ? SUBSCRIPTION_TIERS.starter.price : SUBSCRIPTION_TIERS.starter.yearlyPrice,
-      description: "For solo founders building their first startup",
-      features: SUBSCRIPTION_TIERS.starter.features,
-      cta: "Start Free Trial",
-      popular: false,
-    },
-    {
-      id: "growth",
-      name: SUBSCRIPTION_TIERS.growth.name,
-      icon: BuildingOfficeIcon,
-      price: billingPeriod === "monthly" ? SUBSCRIPTION_TIERS.growth.price : SUBSCRIPTION_TIERS.growth.yearlyPrice,
-      description: "For funded startups ready to scale",
-      features: SUBSCRIPTION_TIERS.growth.features,
-      cta: "Start Free Trial",
+      name: 'Startup',
+      price: '$499',
+      period: '/month',
+      description: 'For startups actively fundraising',
+      features: [
+        '10 pitch analyses/month',
+        'All 4 AI agents (financial, technical, market, legal)',
+        'Investor matching (up to 20 matches)',
+        'Priority support',
+        'Private results',
+        'Export to PDF',
+      ],
+      cta: 'Start Trial',
+      href: '/pricing/checkout?plan=startup',
       popular: true,
+    },
+    {
+      name: 'DeFi Pro',
+      price: '$2,999',
+      period: 'one-time',
+      description: 'Complete DeFi protocol launch package',
+      features: [
+        'Tokenomics design (ve-model)',
+        'Smart contract security audit',
+        'Liquidity strategy (LBP, POL)',
+        'CEX listing roadmap',
+        '72-hour delivery',
+        'Dedicated support',
+      ],
+      cta: 'Launch DeFi',
+      href: '/defi',
+      popular: false,
+    },
+    {
+      name: 'M&A Exit',
+      price: '$9,999',
+      period: 'one-time',
+      description: 'Comprehensive exit analysis',
+      features: [
+        '20-30 acquirer matches',
+        'Multi-method valuation',
+        'Due diligence prep (100+ docs)',
+        'Deal structure recommendations',
+        'Exit readiness score',
+        'Success fee option (0.25%)',
+      ],
+      cta: 'Plan Exit',
+      href: '/exit',
+      popular: false,
     },
   ];
 
+  const agentPlans = [
+    {
+      name: 'Free Tier',
+      price: '$0',
+      period: '/month',
+      description: 'For AI agents in development/testing',
+      features: [
+        '10 API calls/month',
+        '1 request/minute rate limit',
+        'All endpoints (pitch, DeFi, matching, M&A)',
+        'Community support',
+        'Public API docs',
+      ],
+      cta: 'Get API Key',
+      href: '/api-keys',
+      popular: false,
+    },
+    {
+      name: 'Agent Tier',
+      price: '$99',
+      period: '/month',
+      description: 'For production AI agents',
+      features: [
+        'Unlimited API calls',
+        '100 requests/minute',
+        'All endpoints',
+        'Priority support (24h response)',
+        'SDK + CLI included',
+        'Analytics dashboard',
+      ],
+      cta: 'Enable Agent Mode',
+      href: '/pricing/checkout?plan=agent',
+      popular: true,
+    },
+    {
+      name: 'Enterprise',
+      price: '$499',
+      period: '/month',
+      description: 'For AI agent platforms & enterprises',
+      features: [
+        'Unlimited API calls',
+        '1,000 requests/minute',
+        'Dedicated infrastructure',
+        'White-label option',
+        'Custom integrations',
+        'SLA (99.9% uptime)',
+        '1-hour support response',
+      ],
+      cta: 'Contact Sales',
+      href: '/contact',
+      popular: false,
+    },
+  ];
+
+  const plans = mode === 'human' ? humanPlans : agentPlans;
+
   return (
-    <main className="min-h-screen bg-[var(--background)] relative overflow-hidden py-20">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-20" />
-      <motion.div
-        className="absolute top-20 right-1/4 w-96 h-96 rounded-full opacity-20"
-        style={{ background: "radial-gradient(circle, #00f0ff 0%, transparent 70%)" }}
-        animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.3, 0.2] }}
-        transition={{ duration: 8, repeat: Infinity }}
-      />
-
-      <div className="relative z-10 container mx-auto px-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white">
+      <div className="container mx-auto px-4 py-16">
         {/* Header */}
-        <div className="text-center mb-12">
-          <Link href="/">
-            <motion.button
-              className="mb-8 text-[var(--text-secondary)] hover:text-white transition"
-              whileHover={{ scale: 1.05 }}
-            >
-              ← Back to Home
-            </motion.button>
-          </Link>
-
-          <h1 className="text-5xl md:text-6xl font-bold mb-4">
-            Choose Your <span className="gradient-text">Plan</span>
-          </h1>
-          <p className="text-xl text-[var(--text-secondary)] max-w-2xl mx-auto">
-            Get instant AI analysis, funding opportunities, and autonomous support
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-5xl font-bold mb-4">Choose Your Mode</h1>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
+            Whether you're a human founder or an AI agent, we've got you covered
           </p>
-        </div>
 
-        {/* Billing Toggle */}
-        <div className="flex justify-center mb-12">
-          <div className="inline-flex items-center gap-3 p-1 rounded-full glass">
+          {/* Mode Toggle */}
+          <div className="inline-flex rounded-lg bg-gray-800 p-1">
             <button
-              onClick={() => setBillingPeriod("monthly")}
-              className={`px-6 py-2 rounded-full transition ${
-                billingPeriod === "monthly"
-                  ? "bg-gradient-to-r from-[#00f0ff] to-[#a855f7] text-black"
-                  : "text-[var(--text-secondary)] hover:text-white"
+              onClick={() => setMode('human')}
+              className={`px-8 py-3 rounded-lg font-semibold transition-all ${
+                mode === 'human'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white'
               }`}
             >
-              Monthly
+              👤 Human Mode
             </button>
             <button
-              onClick={() => setBillingPeriod("yearly")}
-              className={`px-6 py-2 rounded-full transition flex items-center gap-2 ${
-                billingPeriod === "yearly"
-                  ? "bg-gradient-to-r from-[#00f0ff] to-[#a855f7] text-black"
-                  : "text-[var(--text-secondary)] hover:text-white"
+              onClick={() => setMode('agent')}
+              className={`px-8 py-3 rounded-lg font-semibold transition-all ${
+                mode === 'agent'
+                  ? 'bg-purple-600 text-white'
+                  : 'text-gray-400 hover:text-white'
               }`}
             >
-              Yearly
-              <span className="text-xs px-2 py-0.5 rounded-full bg-[#10b981] text-white">
-                Save 17%
-              </span>
+              🤖 AI Agent Mode
             </button>
           </div>
-        </div>
+        </motion.div>
+
+        {/* Mode Description */}
+        <motion.div
+          key={mode}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-3xl mx-auto mb-12 p-6 rounded-xl bg-gray-800/50 backdrop-blur-sm"
+        >
+          {mode === 'human' ? (
+            <>
+              <h3 className="text-2xl font-bold mb-3">👤 Human Mode</h3>
+              <p className="text-gray-300 mb-4">
+                Beautiful web interface for founders, VCs, and operators. Submit pitches,
+                analyze DeFi protocols, match with investors, and plan exits — all through
+                an intuitive UI.
+              </p>
+              <div className="flex gap-4 text-sm">
+                <span className="px-3 py-1 rounded-full bg-blue-600/20 text-blue-400">
+                  Web UI
+                </span>
+                <span className="px-3 py-1 rounded-full bg-blue-600/20 text-blue-400">
+                  Interactive dashboards
+                </span>
+                <span className="px-3 py-1 rounded-full bg-blue-600/20 text-blue-400">
+                  Visual reports
+                </span>
+              </div>
+            </>
+          ) : (
+            <>
+              <h3 className="text-2xl font-bold mb-3">🤖 AI Agent Mode</h3>
+              <p className="text-gray-300 mb-4">
+                Programmatic API access for AI agents (OpenClaw, Claude Code, Cursor, etc.).
+                Install via npm, use CLI, or integrate via SDK. Perfect for automation, batch
+                processing, and agent-to-agent workflows.
+              </p>
+              <div className="bg-gray-900 rounded-lg p-4 mb-4">
+                <code className="text-green-400 text-sm">
+                  $ npm install -g @swarm-accelerator/cli<br />
+                  $ swarm analyze --file pitch.json
+                </code>
+              </div>
+              <div className="flex gap-4 text-sm">
+                <span className="px-3 py-1 rounded-full bg-purple-600/20 text-purple-400">
+                  REST API
+                </span>
+                <span className="px-3 py-1 rounded-full bg-purple-600/20 text-purple-400">
+                  CLI
+                </span>
+                <span className="px-3 py-1 rounded-full bg-purple-600/20 text-purple-400">
+                  OpenClaw skill
+                </span>
+              </div>
+            </>
+          )}
+        </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {tiers.map((tier, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          {plans.map((plan, index) => (
             <motion.div
-              key={tier.id}
-              initial={{ opacity: 0, y: 20 }}
+              key={plan.name}
+              initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`card relative ${
-                tier.popular ? "border-2 border-[#00f0ff] shadow-2xl" : ""
+              className={`relative rounded-2xl p-8 ${
+                plan.popular
+                  ? 'bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-2 border-purple-500'
+                  : 'bg-gray-800/50 border border-gray-700'
               }`}
             >
-              {tier.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="px-4 py-1 rounded-full bg-gradient-to-r from-[#00f0ff] to-[#a855f7] text-black text-sm font-medium">
-                    Most Popular
-                  </span>
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-sm font-semibold">
+                  Most Popular
                 </div>
               )}
 
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <tier.icon className="w-8 h-8 text-[#00f0ff]" />
-                  <h3 className="text-2xl font-bold">{tier.name}</h3>
-                </div>
-                <p className="text-sm text-[var(--text-secondary)]">{tier.description}</p>
-              </div>
+              <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+              <p className="text-gray-400 mb-6 text-sm h-12">{plan.description}</p>
 
               <div className="mb-6">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold gradient-text">
-                    ${tier.price}
-                  </span>
-                  {tier.price > 0 && (
-                    <span className="text-[var(--text-muted)]">
-                      /{billingPeriod === "monthly" ? "mo" : "yr"}
-                    </span>
-                  )}
-                </div>
-                {billingPeriod === "yearly" && tier.price > 0 && (
-                  <p className="text-sm text-[var(--text-muted)] mt-1">
-                    ${Math.round(tier.price / 12)}/mo billed annually
-                  </p>
-                )}
+                <span className="text-4xl font-bold">{plan.price}</span>
+                <span className="text-gray-400">{plan.period}</span>
               </div>
 
               <ul className="space-y-3 mb-8">
-                {tier.features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <CheckIcon className="w-5 h-5 text-[#10b981] flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-[var(--text-secondary)]">{feature}</span>
+                {plan.features.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <svg
+                      className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    <span className="text-gray-300">{feature}</span>
                   </li>
                 ))}
               </ul>
 
-              {tier.id === "free" ? (
-                <Link href={tier.ctaLink!}>
-                  <motion.button
-                    className="w-full py-3 rounded-xl border border-[var(--glass-border)] hover:border-white/30 transition font-medium"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {tier.cta}
-                  </motion.button>
-                </Link>
-              ) : (
-                <motion.button
-                  onClick={() => handleSubscribe(tier.id as "starter" | "growth", billingPeriod)}
-                  disabled={isLoading === tier.id}
-                  className={`w-full py-3 rounded-xl font-medium transition ${
-                    tier.popular
-                      ? "bg-gradient-to-r from-[#00f0ff] to-[#a855f7] text-black hover:opacity-90"
-                      : "border border-[var(--glass-border)] hover:border-white/30"
-                  } disabled:opacity-50`}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+              <Link href={plan.href}>
+                <button
+                  className={`w-full py-3 rounded-lg font-semibold transition-all ${
+                    plan.popular
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
+                      : 'bg-gray-700 hover:bg-gray-600'
+                  }`}
                 >
-                  {isLoading === tier.id ? "Loading..." : tier.cta}
-                </motion.button>
-              )}
+                  {plan.cta}
+                </button>
+              </Link>
             </motion.div>
           ))}
         </div>
 
-        {/* Enterprise CTA */}
-        <motion.div
-          className="mt-12 max-w-4xl mx-auto card text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
-          <h3 className="text-2xl font-bold mb-2">Enterprise / Venture Studio</h3>
-          <p className="text-[var(--text-secondary)] mb-4">
-            White-label platform, custom AI training, bulk analysis, API access, and dedicated support
-          </p>
-          <Link href="/contact">
-            <motion.button
-              className="btn-secondary"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Contact Sales
-            </motion.button>
-          </Link>
-        </motion.div>
+        {/* Installation Instructions (Agent Mode) */}
+        {mode === 'agent' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-4xl mx-auto mt-16 p-8 rounded-2xl bg-gray-800/50 backdrop-blur-sm border border-gray-700"
+          >
+            <h3 className="text-2xl font-bold mb-6">🚀 Quick Start for AI Agents</h3>
 
-        {/* FAQ Section */}
-        <div className="mt-20 max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Frequently Asked <span className="gradient-text">Questions</span>
-          </h2>
+            <div className="space-y-6">
+              <div>
+                <h4 className="font-bold mb-2">1. Install CLI</h4>
+                <div className="bg-gray-900 rounded-lg p-4">
+                  <code className="text-green-400">
+                    npm install -g @swarm-accelerator/cli
+                  </code>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-bold mb-2">2. Get API Key</h4>
+                <div className="bg-gray-900 rounded-lg p-4">
+                  <code className="text-green-400">
+                    # Visit: https://swarm.accelerator.ai/api-keys<br />
+                    export SWARM_API_KEY=sk_agent_your_key_here
+                  </code>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-bold mb-2">3. Run Analysis</h4>
+                <div className="bg-gray-900 rounded-lg p-4">
+                  <code className="text-green-400">
+                    swarm analyze --file pitch.json --output analysis.json
+                  </code>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-bold mb-2">4. OpenClaw Skill</h4>
+                <p className="text-gray-400 mb-2">
+                  For OpenClaw agents, the skill is pre-installed. Just use the commands:
+                </p>
+                <div className="bg-gray-900 rounded-lg p-4">
+                  <code className="text-green-400">
+                    swarm analyze --file pitch.json<br />
+                    swarm defi --file protocol.json<br />
+                    swarm match --file project.json<br />
+                    swarm exit --file company.json
+                  </code>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 p-4 bg-blue-900/30 border border-blue-600/30 rounded-lg">
+              <p className="text-sm text-blue-300">
+                <strong>💡 Tip:</strong> Combine Swarm with other OpenClaw skills (bird,
+                slack, notion) for powerful automation workflows!
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* FAQ */}
+        <div className="max-w-4xl mx-auto mt-16">
+          <h2 className="text-3xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
 
           <div className="space-y-4">
-            {[
-              {
-                q: "Can I try before I buy?",
-                a: "Yes! Start with our free Community tier to test the platform. All paid plans include a 14-day free trial with full access to features.",
-              },
-              {
-                q: "What payment methods do you accept?",
-                a: "We accept all major credit cards (Visa, Mastercard, Amex) via Stripe. For Enterprise plans, we also accept bank transfers and custom invoicing.",
-              },
-              {
-                q: "Can I cancel anytime?",
-                a: "Absolutely. Cancel anytime from your dashboard. Your access continues until the end of your billing period, and we don't offer prorated refunds.",
-              },
-              {
-                q: "How accurate is the AI analysis?",
-                a: "Our AI agents have been benchmarked against human VC decisions with 78% agreement rate. They analyze 1000+ data points in 4-8 seconds vs weeks for traditional VCs.",
-              },
-              {
-                q: "Do you take equity in my startup?",
-                a: "Only if you choose to raise via our platform. Standard accelerator model: 5-7% equity for funded startups. No equity for subscription-only users.",
-              },
-            ].map((faq, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + i * 0.1 }}
-                className="card"
-              >
-                <h4 className="font-semibold mb-2">{faq.q}</h4>
-                <p className="text-sm text-[var(--text-secondary)]">{faq.a}</p>
-              </motion.div>
-            ))}
+            <details className="p-6 rounded-xl bg-gray-800/50 border border-gray-700">
+              <summary className="font-semibold cursor-pointer">
+                What's the difference between Human Mode and AI Agent Mode?
+              </summary>
+              <p className="mt-4 text-gray-400">
+                Human Mode uses the web UI (beautiful dashboards, visual reports). AI Agent
+                Mode uses the API/CLI (programmatic access for automation). Both access the
+                same powerful AI agents, just different interfaces.
+              </p>
+            </details>
+
+            <details className="p-6 rounded-xl bg-gray-800/50 border border-gray-700">
+              <summary className="font-semibold cursor-pointer">
+                Can I use both modes?
+              </summary>
+              <p className="mt-4 text-gray-400">
+                Yes! Subscribe to a human plan (e.g., Startup $499/mo) AND an agent plan
+                (Agent $99/mo) to access both. Perfect for teams where humans use the UI
+                and automation scripts use the API.
+              </p>
+            </details>
+
+            <details className="p-6 rounded-xl bg-gray-800/50 border border-gray-700">
+              <summary className="font-semibold cursor-pointer">
+                Which AI agents are supported?
+              </summary>
+              <p className="mt-4 text-gray-400">
+                Any AI agent that can execute shell commands or make HTTP requests:
+                OpenClaw, Claude Code, Cursor, GitHub Copilot, Aider, Cline, Windsurf, or
+                custom agents. We provide a CLI and SDK for easy integration.
+              </p>
+            </details>
+
+            <details className="p-6 rounded-xl bg-gray-800/50 border border-gray-700">
+              <summary className="font-semibold cursor-pointer">
+                What are the rate limits?
+              </summary>
+              <p className="mt-4 text-gray-400">
+                Free: 10 requests/month. Agent ($99/mo): Unlimited requests, 100/minute.
+                Enterprise ($499/mo): Unlimited requests, 1,000/minute. Humans have
+                separate limits (no strict cap, fair use policy).
+              </p>
+            </details>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

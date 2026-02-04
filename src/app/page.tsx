@@ -51,6 +51,38 @@ const steps = [
   },
 ];
 
+// Product suite
+const products = [
+  {
+    title: "🎯 Pitch Accelerator",
+    description: "4 AI agents analyze your startup in 20 seconds",
+    href: "/pitch",
+    price: "Free - $499",
+    features: ["Financial analysis", "Technical DD", "Market research", "Legal compliance"],
+  },
+  {
+    title: "🔥 DeFi Protocol Accelerator",
+    description: "Complete DeFi launch: tokenomics, security, liquidity",
+    href: "/defi",
+    price: "$2,999",
+    features: ["Tokenomics design (ve-model)", "Smart contract audit", "Liquidity strategy", "72-hour delivery"],
+  },
+  {
+    title: "💰 Capital Marketplace",
+    description: "AI-powered investor matching + OTC trading",
+    href: "/marketplace-demo",
+    price: "$199 - $999/mo",
+    features: ["Investor matching", "OTC order book", "Dark pool", "Success fees"],
+  },
+  {
+    title: "🚀 M&A Exit Accelerator",
+    description: "Complete exit analysis: valuation, acquirers, DD prep",
+    href: "/exit",
+    price: "$9,999",
+    features: ["20-30 acquirer matches", "Valuation range", "Due diligence prep", "Deal structure"],
+  },
+];
+
 // Agent Orb Component
 function AgentOrb({ agent, index }: { agent: typeof agents[0]; index: number }) {
   return (
@@ -161,8 +193,10 @@ function HeroSection() {
             </h1>
 
             <p className="text-xl text-[var(--text-secondary)] mb-8 max-w-xl">
-              Submit your startup pitch to our intelligent AI swarm. Get instant analysis,
-              valuation, and connect with top-tier VCs — all in one platform.
+              Complete AI platform: <span className="text-[#00f0ff]">Pitch Analysis</span>, 
+              <span className="text-[#a855f7]"> Investor Matching</span>, 
+              <span className="text-[#00f0ff]"> OTC Trading</span>, and 
+              <span className="text-[#a855f7]"> M&A Exit</span> — all powered by AI agents.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -176,14 +210,24 @@ function HeroSection() {
                   Start Pitching
                 </motion.button>
               </Link>
-              <Link href="/vc">
+              <Link href="/marketplace-demo">
                 <motion.button
                   className="btn-secondary text-lg flex items-center gap-2"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <BanknotesIcon className="w-5 h-5" />
-                  Join as VC
+                  Capital Marketplace
+                </motion.button>
+              </Link>
+              <Link href="/exit">
+                <motion.button
+                  className="btn-secondary text-lg flex items-center gap-2"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <ChartBarIcon className="w-5 h-5" />
+                  M&A Exit
                 </motion.button>
               </Link>
             </div>
@@ -323,6 +367,95 @@ function HowItWorksSection() {
             </motion.div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+// Products Section
+function ProductsSection() {
+  return (
+    <section className="py-24 relative">
+      <div className="container mx-auto px-6">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            Complete <span className="gradient-text">Product Suite</span>
+          </h2>
+          <p className="text-xl text-[var(--text-secondary)] max-w-2xl mx-auto">
+            From pitch analysis to exit — we've got your entire startup journey covered
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {products.map((product, index) => (
+            <motion.div
+              key={product.title}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.2 }}
+              viewport={{ once: true }}
+            >
+              <Link href={product.href}>
+                <div className="card h-full hover:scale-[1.02] transition-transform cursor-pointer glass-hover">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-2xl font-bold">{product.title}</h3>
+                    <span className="text-sm px-3 py-1 rounded-full bg-green-600/20 text-green-400 border border-green-600/30">
+                      {product.price}
+                    </span>
+                  </div>
+                  <p className="text-[var(--text-secondary)] mb-6">
+                    {product.description}
+                  </p>
+                  <ul className="space-y-2">
+                    {product.features.map((feature, i) => (
+                      <li key={i} className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                        <svg className="w-4 h-4 text-[#00f0ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6 flex items-center gap-2 text-[#00f0ff]">
+                    <span>Launch →</span>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Unified Stats */}
+        <motion.div
+          className="mt-16 p-8 rounded-2xl glass text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="text-3xl font-bold gradient-text mb-1">$13M-18M</div>
+              <div className="text-sm text-[var(--text-secondary)]">ARR Potential (Year 1)</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold gradient-text mb-1">4 Products</div>
+              <div className="text-sm text-[var(--text-secondary)]">Pitch, DeFi, Marketplace, M&A</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold gradient-text mb-1">20s - 72h</div>
+              <div className="text-sm text-[var(--text-secondary)]">AI Analysis Time</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold gradient-text mb-1">100%</div>
+              <div className="text-sm text-[var(--text-secondary)]">AI-Powered</div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -468,9 +601,10 @@ function Footer() {
           </div>
           <div className="flex gap-8 text-[var(--text-secondary)]">
             <Link href="/pitch" className="hover:text-white transition">Pitch</Link>
-            <Link href="/vc" className="hover:text-white transition">For VCs</Link>
-            <Link href="/accelerator" className="hover:text-white transition">Accelerator</Link>
-            <Link href="/network" className="hover:text-white transition">Network</Link>
+            <Link href="/defi" className="hover:text-white transition">DeFi</Link>
+            <Link href="/marketplace-demo" className="hover:text-white transition">Marketplace</Link>
+            <Link href="/exit" className="hover:text-white transition">M&A Exit</Link>
+            <Link href="/pricing" className="hover:text-white transition">Pricing</Link>
           </div>
           <div className="text-[var(--text-muted)]">
             © 2026 SwarmAccelerator. All rights reserved.
@@ -488,6 +622,7 @@ export default function Home() {
       <HeroSection />
       <StatsSection />
       <HowItWorksSection />
+      <ProductsSection />
       <FeaturesSection />
       <CTASection />
       <Footer />
