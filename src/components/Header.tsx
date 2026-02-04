@@ -6,11 +6,9 @@ import { usePathname } from "next/navigation";
 
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Pitch", href: "/pitch" },
-  { name: "DeFi", href: "/defi" },
-  { name: "Marketplace", href: "/marketplace-demo" },
-  { name: "M&A Exit", href: "/exit" },
-  { name: "Pricing", href: "/pricing" },
+  { name: "Apply", href: "/pitch" },
+  { name: "Marketplace", href: "/marketplace" },
+  { name: "Features", href: "/#features" },
 ];
 
 export default function Header() {

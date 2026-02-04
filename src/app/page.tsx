@@ -1,620 +1,412 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import {
-  RocketLaunchIcon,
-  BanknotesIcon,
-  UserGroupIcon,
-  SparklesIcon,
-  ChartBarIcon,
-  ShieldCheckIcon,
-  CpuChipIcon,
-  ScaleIcon,
-} from "@heroicons/react/24/outline";
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 
-// Agent data for visualization
-const agents = [
-  { id: 1, name: "Financial Analyst", icon: ChartBarIcon, color: "#00f0ff", delay: 0 },
-  { id: 2, name: "Technical DD", icon: CpuChipIcon, color: "#a855f7", delay: 0.5 },
-  { id: 3, name: "Market Research", icon: UserGroupIcon, color: "#22d3ee", delay: 1 },
-  { id: 4, name: "Legal & Compliance", icon: ScaleIcon, color: "#10b981", delay: 1.5 },
-];
-
-// Stats data
-const stats = [
-  { value: "$125K", label: "Seed Investment" },
-  { value: "7%", label: "Equity Stake" },
-  { value: "Free", label: "Application" },
-  { value: "3 months", label: "Batch Duration" },
-];
-
-// How it works steps
-const steps = [
-  {
-    step: 1,
-    title: "Apply Free",
-    description: "Submit your startup idea or company. AI agents analyze instantly - no waiting, no fees.",
-    icon: RocketLaunchIcon,
-  },
-  {
-    step: 2,
-    title: "Join the Batch",
-    description: "Best companies accepted into our 3-month program. Get $125K for 7% equity. Work with AI agent swarms daily.",
-    icon: SparklesIcon,
-  },
-  {
-    step: 3,
-    title: "Build & Exit",
-    description: "Ship product, find customers, raise follow-on rounds. AI agents help from MVP to M&A.",
-    icon: BanknotesIcon,
-  },
-];
-
-// AI Agent Tools (included in batch program)
-const products = [
-  {
-    title: "🎯 Instant Analysis",
-    description: "AI agents analyze your startup in seconds",
-    href: "/pitch",
-    price: "Free for all",
-    features: ["Financial modeling", "Technical review", "Market sizing", "Competitive analysis"],
-  },
-  {
-    title: "🚀 Product Builder",
-    description: "AI agents help you ship faster",
-    href: "/defi",
-    price: "Batch members",
-    features: ["Architecture design", "Code review", "Security audit", "Best practices"],
-  },
-  {
-    title: "💰 Investor Network",
-    description: "AI-powered investor matching",
-    href: "/marketplace-demo",
-    price: "Success fees",
-    features: ["VC introductions", "Angel network", "Follow-on rounds", "Demo day prep"],
-  },
-  {
-    title: "🏆 Exit Strategy",
-    description: "M&A preparation and execution",
-    href: "/exit",
-    price: "Success fees",
-    features: ["Acquirer matching", "Valuation modeling", "DD preparation", "Deal structuring"],
-  },
-];
-
-// Agent Orb Component
-function AgentOrb({ agent, index }: { agent: typeof agents[0]; index: number }) {
+export default function HomePage() {
   return (
-    <motion.div
-      className="absolute"
-      style={{
-        top: "50%",
-        left: "50%",
-      }}
-      animate={{
-        rotate: [0, 360],
-      }}
-      transition={{
-        duration: 20 + index * 5,
-        repeat: Infinity,
-        ease: "linear",
-        delay: agent.delay,
-      }}
-    >
-      <motion.div
-        className="relative"
-        style={{
-          transform: `translateX(${120 + index * 40}px) translateY(-50%)`,
-        }}
-        animate={{
-          rotate: [0, -360],
-        }}
-        transition={{
-          duration: 20 + index * 5,
-          repeat: Infinity,
-          ease: "linear",
-          delay: agent.delay,
-        }}
-      >
-        <motion.div
-          className="agent-orb glass"
-          style={{
-            boxShadow: `0 0 30px ${agent.color}40, 0 0 60px ${agent.color}20`,
-            background: `linear-gradient(135deg, ${agent.color}20, transparent)`,
-          }}
-          whileHover={{ scale: 1.2 }}
-          animate={{
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            delay: index * 0.3,
-          }}
-        >
-          <agent.icon className="w-8 h-8" style={{ color: agent.color }} />
-        </motion.div>
-        <motion.div
-          className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium"
-          style={{ color: agent.color }}
-        >
-          {agent.name}
-        </motion.div>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-// Hero Section
-function HeroSection() {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-30" />
-      <div className="absolute inset-0 radial-overlay" />
-
-      {/* Gradient Orbs */}
-      <motion.div
-        className="absolute top-20 left-1/4 w-96 h-96 rounded-full opacity-20"
-        style={{ background: "radial-gradient(circle, #00f0ff 0%, transparent 70%)" }}
-        animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.3, 0.2] }}
-        transition={{ duration: 8, repeat: Infinity }}
-      />
-      <motion.div
-        className="absolute bottom-20 right-1/4 w-80 h-80 rounded-full opacity-20"
-        style={{ background: "radial-gradient(circle, #a855f7 0%, transparent 70%)" }}
-        animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.35, 0.2] }}
-        transition={{ duration: 10, repeat: Infinity, delay: 2 }}
-      />
-
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center px-4 py-20">
+        <div className="max-w-6xl mx-auto text-center">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <motion.div
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <SparklesIcon className="w-4 h-4 text-[#00f0ff]" />
-              <span className="text-sm text-[var(--text-secondary)]">YCombinator × AI Agents</span>
-            </motion.div>
-
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-              <span className="text-white">Build Your</span>
+            <div className="inline-block px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full mb-6">
+              <span className="text-purple-400 text-sm font-medium">100% Free • AI-Powered • Web3 Native</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+              AI Accelerator
               <br />
-              <span className="gradient-text">Startup with AI</span>
+              Powered by Agents
             </h1>
-
-            <p className="text-xl text-[var(--text-secondary)] mb-8 max-w-xl">
-              <span className="text-[#00f0ff]">Apply free</span>. Get instant AI analysis. 
-              Join our batch for <span className="text-[#a855f7]">$125K funding</span>. 
-              Build with AI agent swarms from <span className="text-[#00f0ff]">idea to exit</span>.
+            
+            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+              Apply free. Pitch to AI sharks. Get funded. Build with 24/7 AI support.
+              <span className="block mt-2 text-purple-400">We only charge on successful deals.</span>
             </p>
 
-            <div className="flex flex-wrap gap-4">
-              <Link href="/pitch">
-                <motion.button
-                  className="btn-primary text-lg flex items-center gap-2 px-8 py-4"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <RocketLaunchIcon className="w-6 h-6" />
-                  Apply Now (Free)
-                </motion.button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Link 
+                href="/pitch"
+                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
+              >
+                Start Free Application →
               </Link>
-              <Link href="/pricing">
-                <motion.button
-                  className="btn-secondary text-lg flex items-center gap-2 px-8 py-4"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <SparklesIcon className="w-6 h-6" />
-                  Learn More
-                </motion.button>
+              <Link 
+                href="#features"
+                className="px-8 py-4 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-lg border border-gray-700 transition-all duration-200"
+              >
+                Learn More
               </Link>
             </div>
-          </motion.div>
 
-          {/* Right - Agent Swarm Visualization */}
-          <motion.div
-            className="relative h-[500px] flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-          >
-            {/* Central Core */}
-            <motion.div
-              className="absolute w-32 h-32 rounded-full glass glow-cyan flex items-center justify-center"
-              animate={{
-                boxShadow: [
-                  "0 0 30px rgba(0, 240, 255, 0.3), 0 0 60px rgba(0, 240, 255, 0.15)",
-                  "0 0 50px rgba(0, 240, 255, 0.5), 0 0 100px rgba(0, 240, 255, 0.25)",
-                  "0 0 30px rgba(0, 240, 255, 0.3), 0 0 60px rgba(0, 240, 255, 0.15)",
-                ],
-              }}
-              transition={{ duration: 3, repeat: Infinity }}
-            >
-              <SparklesIcon className="w-12 h-12 text-[#00f0ff]" />
-            </motion.div>
-
-            {/* Orbiting Agents */}
-            {agents.map((agent, index) => (
-              <AgentOrb key={agent.id} agent={agent} index={index} />
-            ))}
-
-            {/* Connection Lines (visual effect) */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none">
-              <defs>
-                <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#00f0ff" stopOpacity="0.3" />
-                  <stop offset="100%" stopColor="#a855f7" stopOpacity="0.3" />
-                </linearGradient>
-              </defs>
-              {[160, 200, 240, 280].map((r, i) => (
-                <motion.circle
-                  key={i}
-                  cx="50%"
-                  cy="50%"
-                  r={r}
-                  fill="none"
-                  stroke="url(#lineGrad)"
-                  strokeWidth="1"
-                  strokeDasharray="8 8"
-                  initial={{ opacity: 0.2 }}
-                  animate={{ opacity: [0.2, 0.4, 0.2] }}
-                  transition={{ duration: 4, repeat: Infinity, delay: i * 0.5 }}
-                />
-              ))}
-            </svg>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// Stats Section
-function StatsSection() {
-  return (
-    <section className="py-20 relative">
-      <div className="container mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              className="text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <div className="text-4xl md:text-5xl font-bold gradient-text mb-2">
-                {stat.value}
+            {/* Key Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-purple-400">$0</div>
+                <div className="text-sm text-gray-400">Application Fee</div>
               </div>
-              <div className="text-[var(--text-secondary)]">{stat.label}</div>
-            </motion.div>
-          ))}
+              <div className="text-center">
+                <div className="text-3xl font-bold text-pink-400">37+</div>
+                <div className="text-sm text-gray-400">AI Agents</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-400">24/7</div>
+                <div className="text-sm text-gray-400">AI Support</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-green-400">Web3</div>
+                <div className="text-sm text-gray-400">Native</div>
+              </div>
+            </div>
+          </motion.div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-// How It Works Section
-function HowItWorksSection() {
-  return (
-    <section className="py-24 relative">
-      <div className="container mx-auto px-6">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            How It <span className="gradient-text">Works</span>
-          </h2>
-          <p className="text-xl text-[var(--text-secondary)] max-w-2xl mx-auto">
-            Three simple steps to get your startup funded and accelerated
-          </p>
-        </motion.div>
+      {/* Core Features */}
+      <section id="features" className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Three Core Features
+            </h2>
+            <p className="text-xl text-gray-400">
+              AI-powered acceleration from pitch to exit
+            </p>
+          </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {steps.map((step, index) => (
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Feature 1: AI Accelerator */}
             <motion.div
-              key={step.step}
-              className="relative"
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-purple-900/30 to-purple-800/30 backdrop-blur-sm border border-purple-500/20 rounded-2xl p-8 hover:border-purple-500/40 transition-all duration-300"
+            >
+              <div className="text-4xl mb-4">🤖</div>
+              <h3 className="text-2xl font-bold text-white mb-4">AI Accelerator</h3>
+              <p className="text-gray-300 mb-6">
+                Dynamic agent swarm evaluates your startup. Domain experts spawn based on your industry. 
+                Deep analysis in seconds, not weeks.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-400 mb-6">
+                <li>• 37+ specialized AI agents</li>
+                <li>• Industry-specific evaluation (DeFi, SaaS, AI/ML, etc.)</li>
+                <li>• Sub-agent spawning for deep dives</li>
+                <li>• 24/7 mentorship and support</li>
+              </ul>
+              <Link href="/pitch" className="text-purple-400 hover:text-purple-300 font-semibold">
+                Apply Now →
+              </Link>
+            </motion.div>
+
+            {/* Feature 2: SharkTank Funding */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-gradient-to-br from-pink-900/30 to-pink-800/30 backdrop-blur-sm border border-pink-500/20 rounded-2xl p-8 hover:border-pink-500/40 transition-all duration-300"
+            >
+              <div className="text-4xl mb-4">🦈</div>
+              <h3 className="text-2xl font-bold text-white mb-4">SharkTank Funding</h3>
+              <p className="text-gray-300 mb-6">
+                Pitch to AI sharks that compete for your startup. Multiple offers, you choose. 
+                Futarchy markets determine funding multiplier.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-400 mb-6">
+                <li>• Base deal: $125K for 7% equity</li>
+                <li>• Prediction markets (1x-5x multiplier)</li>
+                <li>• Milestone-based fund release</li>
+                <li>• AI verifier swarm (transparent)</li>
+              </ul>
+              <Link href="/pitch" className="text-pink-400 hover:text-pink-300 font-semibold">
+                Get Funded →
+              </Link>
+            </motion.div>
+
+            {/* Feature 3: Capital Marketplace */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-gradient-to-br from-blue-900/30 to-blue-800/30 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-8 hover:border-blue-500/40 transition-all duration-300"
+            >
+              <div className="text-4xl mb-4">💰</div>
+              <h3 className="text-2xl font-bold text-white mb-4">Capital Marketplace</h3>
+              <p className="text-gray-300 mb-6">
+                OTC trading, dark pools, AI-powered matching. Connect with investors, 
+                secondary markets, liquidity on demand.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-400 mb-6">
+                <li>• AI-powered investor matching</li>
+                <li>• Dark pool for large trades</li>
+                <li>• Multi-asset (equity, tokens, SAFEs)</li>
+                <li>• 0.5% transaction fee only</li>
+              </ul>
+              <Link href="/marketplace" className="text-blue-400 hover:text-blue-300 font-semibold">
+                Explore Marketplace →
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Web3 Integration */}
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-900 to-gray-800">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <div className="card h-full">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#00f0ff] to-[#a855f7] flex items-center justify-center">
-                    <step.icon className="w-6 h-6 text-black" />
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                Web3 Native
+                <br />
+                <span className="text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text">
+                  Crypto Integrated
+                </span>
+              </h2>
+              <p className="text-xl text-gray-300 mb-6">
+                Built for the decentralized future. Smart contracts, on-chain transparency, 
+                token economics, DeFi protocols.
+              </p>
+              <div className="space-y-4 text-gray-300">
+                <div className="flex items-start gap-3">
+                  <span className="text-purple-400 text-2xl">✓</span>
+                  <div>
+                    <strong className="text-white">Multi-chain Support</strong>
+                    <p className="text-sm text-gray-400">Ethereum, Base, Optimism, Arbitrum, Polygon, Solana</p>
                   </div>
-                  <span className="text-5xl font-bold text-[var(--background-tertiary)]">
-                    0{step.step}
-                  </span>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                <p className="text-[var(--text-secondary)]">{step.description}</p>
-              </div>
-
-              {/* Connector Line */}
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-[#00f0ff] to-transparent" />
-              )}
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// Products Section
-function ProductsSection() {
-  return (
-    <section className="py-24 relative">
-      <div className="container mx-auto px-6">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Complete <span className="gradient-text">Product Suite</span>
-          </h2>
-          <p className="text-xl text-[var(--text-secondary)] max-w-2xl mx-auto">
-            From pitch analysis to exit — we've got your entire startup journey covered
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {products.map((product, index) => (
-            <motion.div
-              key={product.title}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
-              viewport={{ once: true }}
-            >
-              <Link href={product.href}>
-                <div className="card h-full hover:scale-[1.02] transition-transform cursor-pointer glass-hover">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-2xl font-bold">{product.title}</h3>
-                    <span className="text-sm px-3 py-1 rounded-full bg-green-600/20 text-green-400 border border-green-600/30">
-                      {product.price}
-                    </span>
+                <div className="flex items-start gap-3">
+                  <span className="text-pink-400 text-2xl">✓</span>
+                  <div>
+                    <strong className="text-white">DeFi Protocols</strong>
+                    <p className="text-sm text-gray-400">Tokenomics, liquidity, smart contracts (optional add-on)</p>
                   </div>
-                  <p className="text-[var(--text-secondary)] mb-6">
-                    {product.description}
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-400 text-2xl">✓</span>
+                  <div>
+                    <strong className="text-white">On-Chain Verification</strong>
+                    <p className="text-sm text-gray-400">Transparent milestone tracking, automated fund release</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-2xl p-8"
+            >
+              <h3 className="text-2xl font-bold text-white mb-6">Specialized Tracks (Optional)</h3>
+              
+              <div className="space-y-4 mb-6">
+                <div className="bg-gray-900/50 border border-purple-500/20 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-bold text-white">DeFi Protocol Launch</h4>
+                    <span className="text-purple-400 text-sm">Add-on</span>
+                  </div>
+                  <p className="text-sm text-gray-400 mb-2">
+                    Tokenomics design, security audit, liquidity strategy
                   </p>
-                  <ul className="space-y-2">
-                    {product.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
-                        <svg className="w-4 h-4 text-[#00f0ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-6 flex items-center gap-2 text-[#00f0ff]">
-                    <span>Launch →</span>
+                  <p className="text-xs text-gray-500">Additional fee applies</p>
+                </div>
+
+                <div className="bg-gray-900/50 border border-pink-500/20 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-bold text-white">M&A Exit Prep</h4>
+                    <span className="text-pink-400 text-sm">Add-on</span>
+                  </div>
+                  <p className="text-sm text-gray-400 mb-2">
+                    Acquirer matching, valuation, due diligence prep
+                  </p>
+                  <p className="text-xs text-gray-500">Success-based fee</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-gray-500">
+                Core accelerator is free. Specialized tracks available on demand.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Model */}
+      <section className="py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Simple, Fair Pricing
+            </h2>
+            <p className="text-xl text-gray-400 mb-12">
+              We succeed only when you succeed
+            </p>
+
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-2xl p-8 md:p-12">
+              <div className="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                  <div className="text-5xl font-bold text-purple-400 mb-2">$0</div>
+                  <div className="text-gray-400">Application</div>
+                </div>
+                <div>
+                  <div className="text-5xl font-bold text-pink-400 mb-2">$0</div>
+                  <div className="text-gray-400">Evaluation</div>
+                </div>
+                <div>
+                  <div className="text-5xl font-bold text-blue-400 mb-2">$0</div>
+                  <div className="text-gray-400">Acceleration</div>
+                </div>
+              </div>
+
+              <div className="h-px bg-gray-700 mb-8"></div>
+
+              <div className="space-y-4 text-left">
+                <div className="flex items-start gap-3">
+                  <span className="text-green-400 text-xl">✓</span>
+                  <div>
+                    <strong className="text-white">We charge dealflow fees:</strong>
+                    <p className="text-sm text-gray-400 mt-1">
+                      0.5% marketplace transaction fee • Success-based M&A fee • Optional add-on services
+                    </p>
                   </div>
                 </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Unified Stats */}
-        <motion.div
-          className="mt-16 p-8 rounded-2xl glass text-center"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-3xl font-bold gradient-text mb-1">$13M-18M</div>
-              <div className="text-sm text-[var(--text-secondary)]">ARR Potential (Year 1)</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold gradient-text mb-1">4 Products</div>
-              <div className="text-sm text-[var(--text-secondary)]">Pitch, DeFi, Marketplace, M&A</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold gradient-text mb-1">20s - 72h</div>
-              <div className="text-sm text-[var(--text-secondary)]">AI Analysis Time</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold gradient-text mb-1">100%</div>
-              <div className="text-sm text-[var(--text-secondary)]">AI-Powered</div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-// Features Section
-function FeaturesSection() {
-  const features = [
-    {
-      icon: SparklesIcon,
-      title: "AI Agent Swarm",
-      description: "Four specialized AI agents analyze every aspect of your startup in parallel.",
-    },
-    {
-      icon: ChartBarIcon,
-      title: "Instant Valuation",
-      description: "Get data-driven valuation estimates based on comprehensive analysis.",
-    },
-    {
-      icon: ShieldCheckIcon,
-      title: "VC Persona Agents",
-      description: "VCs create AI personas that participate in funding decisions.",
-    },
-    {
-      icon: BanknotesIcon,
-      title: "Futarchy Funding",
-      description: "Revolutionary prediction market governance for ICO fundraising.",
-    },
-    {
-      icon: UserGroupIcon,
-      title: "Network Access",
-      description: "Connect with funded startups, VCs, and mentors post-funding.",
-    },
-    {
-      icon: RocketLaunchIcon,
-      title: "Full Accelerator",
-      description: "Not just funding — get mentorship, resources, and growth support.",
-    },
-  ];
-
-  return (
-    <section className="py-24 relative bg-[var(--background-secondary)]">
-      <div className="container mx-auto px-6">
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            The Future of <span className="gradient-text-secondary">Acceleration</span>
-          </h2>
-          <p className="text-xl text-[var(--text-secondary)] max-w-2xl mx-auto">
-            Everything you need to launch, fund, and grow your startup
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              className="card glass-hover"
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -8 }}
-            >
-              <div className="w-12 h-12 rounded-xl glass flex items-center justify-center mb-4">
-                <feature.icon className="w-6 h-6 text-[#00f0ff]" />
+                <div className="flex items-start gap-3">
+                  <span className="text-green-400 text-xl">✓</span>
+                  <div>
+                    <strong className="text-white">No upfront costs:</strong>
+                    <p className="text-sm text-gray-400 mt-1">
+                      AI evaluation, mentorship, pitch preparation, investor intros all free
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-green-400 text-xl">✓</span>
+                  <div>
+                    <strong className="text-white">Aligned incentives:</strong>
+                    <p className="text-sm text-gray-400 mt-1">
+                      We only make money when you close deals
+                    </p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-[var(--text-secondary)]">{feature.description}</p>
-            </motion.div>
-          ))}
+            </div>
+          </motion.div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-// CTA Section
-function CTASection() {
-  return (
-    <section className="py-24 relative overflow-hidden">
-      <div className="absolute inset-0 bg-grid-pattern opacity-20" />
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-30"
-        style={{ background: "radial-gradient(circle, #a855f7 0%, transparent 70%)" }}
-        animate={{ scale: [1, 1.2, 1] }}
-        transition={{ duration: 8, repeat: Infinity }}
-      />
+      {/* How It Works */}
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-800 to-gray-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              From Pitch to Funded
+            </h2>
+            <p className="text-xl text-gray-400">
+              Simple process, powerful results
+            </p>
+          </div>
 
-      <div className="container mx-auto px-6 relative z-10">
-        <motion.div
-          className="max-w-3xl mx-auto text-center"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Ready to <span className="gradient-text">Accelerate</span>?
-          </h2>
-          <p className="text-xl text-[var(--text-secondary)] mb-8">
-            Join the future of startup acceleration. Whether you&apos;re a founder
-            seeking funding or a VC looking for the next unicorn.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/pitch">
-              <motion.button
-                className="btn-primary text-lg"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
+          <div className="space-y-8">
+            {[
+              {
+                num: '01',
+                title: 'Apply Free',
+                desc: 'Submit your pitch. No application fee. No gatekeepers.',
+                color: 'purple'
+              },
+              {
+                num: '02',
+                title: 'AI Evaluation',
+                desc: 'Agent swarm spawns based on your industry. Deep analysis in seconds.',
+                color: 'pink'
+              },
+              {
+                num: '03',
+                title: 'Pitch to Sharks',
+                desc: 'AI sharks compete for your startup. Multiple offers generated.',
+                color: 'blue'
+              },
+              {
+                num: '04',
+                title: 'Futarchy Markets',
+                desc: 'Prediction markets determine funding multiplier (1x-5x).',
+                color: 'purple'
+              },
+              {
+                num: '05',
+                title: 'Build with AI',
+                desc: '24/7 agent support, mentorship, investor intros, marketplace access.',
+                color: 'pink'
+              },
+              {
+                num: '06',
+                title: 'Milestone Release',
+                desc: 'Funds unlock as you hit verified KPIs. On-chain transparent.',
+                color: 'blue'
+              },
+            ].map((step, idx) => (
+              <motion.div
+                key={step.num}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="flex gap-6 items-start"
               >
-                Submit Your Pitch
-              </motion.button>
-            </Link>
-            <Link href="/vc">
-              <motion.button
-                className="btn-secondary text-lg"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Become a VC Partner
-              </motion.button>
-            </Link>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-// Footer
-function Footer() {
-  return (
-    <footer className="py-12 border-t border-[var(--glass-border)]">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <SparklesIcon className="w-6 h-6 text-[#00f0ff]" />
-            <span className="text-xl font-bold">SwarmAccelerator</span>
-          </div>
-          <div className="flex gap-8 text-[var(--text-secondary)]">
-            <Link href="/pitch" className="hover:text-white transition">Pitch</Link>
-            <Link href="/defi" className="hover:text-white transition">DeFi</Link>
-            <Link href="/marketplace-demo" className="hover:text-white transition">Marketplace</Link>
-            <Link href="/exit" className="hover:text-white transition">M&A Exit</Link>
-            <Link href="/pricing" className="hover:text-white transition">Pricing</Link>
-          </div>
-          <div className="text-[var(--text-muted)]">
-            © 2026 SwarmAccelerator. All rights reserved.
+                <div className={`flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-${step.color}-600 to-${step.color}-800 flex items-center justify-center text-white font-bold text-xl`}>
+                  {step.num}
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-white mb-2">{step.title}</h3>
+                  <p className="text-gray-400">{step.desc}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
-      </div>
-    </footer>
-  );
-}
+      </section>
 
-// Main Page
-export default function Home() {
-  return (
-    <main className="relative">
-      <HeroSection />
-      <StatsSection />
-      <HowItWorksSection />
-      <ProductsSection />
-      <FeaturesSection />
-      <CTASection />
-      <Footer />
-    </main>
+      {/* CTA */}
+      <section className="py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+              Ready to Build?
+            </h2>
+            <p className="text-xl text-gray-300 mb-8">
+              Apply free. Get funded. Build with AI. No upfront costs.
+            </p>
+            <Link 
+              href="/pitch"
+              className="inline-block px-12 py-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg font-semibold rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
+            >
+              Start Free Application →
+            </Link>
+            <p className="text-sm text-gray-500 mt-6">
+              No credit card required • No application fee • AI-powered evaluation
+            </p>
+          </motion.div>
+        </div>
+      </section>
+    </div>
   );
 }
