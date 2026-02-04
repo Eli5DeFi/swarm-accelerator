@@ -127,24 +127,13 @@ export default function PitchPage() {
                 transition={{ duration: 8, repeat: Infinity }}
             />
 
-            <div className="relative z-10 container mx-auto px-6 py-12">
+            <div className="relative z-10 container mx-auto px-6 py-8">
                 {/* Header */}
-                <div className="flex items-center gap-4 mb-12">
-                    <Link href="/">
-                        <motion.button
-                            className="p-2 rounded-lg glass hover:bg-white/5 transition"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            <ArrowLeftIcon className="w-5 h-5" />
-                        </motion.button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold">Submit Your Pitch</h1>
-                        <p className="text-[var(--text-secondary)]">
-                            Let our AI swarm analyze your startup
-                        </p>
-                    </div>
+                <div className="mb-12">
+                    <h1 className="text-3xl font-bold">Submit Your Pitch</h1>
+                    <p className="text-[var(--text-secondary)]">
+                        Let our AI swarm analyze your startup
+                    </p>
                 </div>
 
                 {/* Progress Steps */}

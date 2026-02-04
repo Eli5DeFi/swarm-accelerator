@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import WaitlistBanner from "@/components/WaitlistBanner";
+import Header from "@/components/Header";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,7 +29,8 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${inter.variable} antialiased`}>
         <WaitlistBanner />
-        <div className="pt-16">
+        <Header />
+        <div className="pt-32">
           {children}
         </div>
       </body>

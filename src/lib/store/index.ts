@@ -246,7 +246,6 @@ export const useStore = create<AppState>()(
                     throw error;
                 }
             },
-            },
         }),
         {
             name: 'swarm-accelerator-store',

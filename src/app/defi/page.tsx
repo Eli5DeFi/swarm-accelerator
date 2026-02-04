@@ -77,10 +77,7 @@ export default function DeFiAccelerator() {
       {/* Header */}
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <Link href="/" className="text-[#00f0ff] hover:text-[#a855f7] transition-colors">
-            ← Back to Home
-          </Link>
-          <div className="text-sm text-gray-400">
+          <div className="text-sm text-gray-400 text-right">
             Powered by eli5defi expertise 🦾
           </div>
         </div>
