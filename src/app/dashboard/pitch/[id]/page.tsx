@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { AgentFeedback } from '@/types/dashboard';
 
 interface PitchDetail {
   id: string;
@@ -30,10 +31,10 @@ interface PitchDetail {
     recommendation: string;
     summary: string;
     valuation: number;
-    financialFeedback: any;
-    technicalFeedback: any;
-    marketFeedback: any;
-    legalFeedback: any;
+    financialFeedback: AgentFeedback;
+    technicalFeedback: AgentFeedback;
+    marketFeedback: AgentFeedback;
+    legalFeedback: AgentFeedback;
     analysisStartedAt: string;
     analysisCompletedAt?: string;
   };

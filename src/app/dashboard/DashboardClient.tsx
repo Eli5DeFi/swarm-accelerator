@@ -4,21 +4,10 @@ import { useState } from 'react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-
-interface Pitch {
-  id: string;
-  name: string;
-  tagline: string;
-  industry: string;
-  stage: string;
-  fundingAsk: number;
-  status: string;
-  createdAt: Date;
-  funding: any | null;
-}
+import { DashboardUser, Pitch } from '@/types/dashboard';
 
 interface DashboardClientProps {
-  user: any;
+  user: DashboardUser;
   pitches: Pitch[];
 }
 

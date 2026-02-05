@@ -1,8 +1,24 @@
-// API route to accept funding offer and create funding record with milestones
+/**
+ * API route to accept funding offer and create funding record with milestones
+ * 
+ * @route POST /api/dashboard/pitch/[id]/accept-funding
+ * @auth Required (session-based)
+ * @body { offerId: string }
+ * @returns Created funding record with milestones
+ */
 
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
+
+// Validation schema for offer acceptance
+const AcceptOfferSchema = z.object({
+  offerId: z.string().regex(/^offer_[12]$/, 'Invalid offer ID format'),
+});
+
+// UUID validation for pitch ID
+const PitchIdSchema = z.string().uuid('Invalid pitch ID format');
 
 export async function POST(
   request: Request,
@@ -15,8 +31,31 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { offerId } = await request.json();
+    const body = await request.json();
     const { id } = await params;
+
+    // Validate pitch ID format
+    const pitchIdValidation = PitchIdSchema.safeParse(id);
+    if (!pitchIdValidation.success) {
+      return NextResponse.json(
+        { error: 'Invalid pitch ID format' },
+        { status: 400 }
+      );
+    }
+
+    // Validate offer ID
+    const offerValidation = AcceptOfferSchema.safeParse(body);
+    if (!offerValidation.success) {
+      return NextResponse.json(
+        {
+          error: 'Invalid offer ID',
+          details: offerValidation.error.issues,
+        },
+        { status: 400 }
+      );
+    }
+
+    const { offerId } = offerValidation.data;
 
     // Verify pitch exists and belongs to user
     const pitch = await prisma.startup.findUnique({
@@ -114,14 +153,35 @@ export async function POST(
     });
 
     return NextResponse.json({
+      success: true,
       message: 'Funding accepted successfully',
       fundingId: funding.id,
       funding,
     });
   } catch (error) {
-    console.error('Failed to accept funding:', error);
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to accept funding:', error);
+    }
+    
+    // Handle specific errors
+    if (error instanceof Error) {
+      if (error.message.includes('not found')) {
+        return NextResponse.json(
+          { error: 'Pitch not found or access denied' },
+          { status: 404 }
+        );
+      }
+      if (error.message.includes('already exists')) {
+        return NextResponse.json(
+          { error: 'Funding already accepted for this pitch' },
+          { status: 409 }
+        );
+      }
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to accept funding offer' },
+      { error: 'Failed to accept funding offer. Please try again.' },
       { status: 500 }
     );
   }

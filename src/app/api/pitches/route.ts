@@ -76,10 +76,15 @@ export async function POST(request: NextRequest) {
     // Trigger analysis asynchronously (don't wait for it)
     analyzeStartup(startup.id)
       .then(() => {
-        console.log(`Analysis completed for startup: ${startup.id}`);
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`Analysis completed for startup: ${startup.id}`);
+        }
       })
       .catch((error) => {
-        console.error(`Analysis failed for startup: ${startup.id}`, error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error(`Analysis failed for startup: ${startup.id}`, error);
+        }
+        // TODO: In production, send to error tracking service (e.g., Sentry)
       });
     
     return NextResponse.json(
@@ -103,11 +108,14 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    console.error("Error creating pitch:", error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error creating pitch:", error);
+    }
+    
     return NextResponse.json(
       {
         success: false,
-        error: "Failed to submit pitch",
+        error: "Failed to submit pitch. Please try again.",
       },
       { status: 500 }
     );
@@ -162,7 +170,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(result);
     
   } catch (error) {
-    console.error("Error fetching pitches:", error);
+    if (process.env.NODE_ENV === 'development') {
+      console.error("Error fetching pitches:", error);
+    }
+    
     return NextResponse.json(
       {
         success: false,

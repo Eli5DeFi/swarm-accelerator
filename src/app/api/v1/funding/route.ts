@@ -1,8 +1,17 @@
-// API v1: Get funding details (for AI agents)
-// Authentication: API key in Authorization header
+/**
+ * API v1: Get funding details (for AI agents)
+ * 
+ * @route GET /api/v1/funding?fundingId={id} OR ?pitchId={id}
+ * @auth Bearer token (API key) in Authorization header
+ * @returns Funding details with milestones and progress
+ */
 
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
+
+// UUID validation schema
+const UUIDSchema = z.string().uuid('Invalid ID format');
 
 async function authenticateApiKey(request: Request) {
   const authHeader = request.headers.get('authorization');
@@ -41,6 +50,27 @@ export async function GET(request: Request) {
         { error: 'fundingId or pitchId query parameter required' },
         { status: 400 }
       );
+    }
+
+    // Validate UUID format
+    if (fundingId) {
+      const validation = UUIDSchema.safeParse(fundingId);
+      if (!validation.success) {
+        return NextResponse.json(
+          { error: 'Invalid fundingId format. Must be a valid UUID.' },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (pitchId) {
+      const validation = UUIDSchema.safeParse(pitchId);
+      if (!validation.success) {
+        return NextResponse.json(
+          { error: 'Invalid pitchId format. Must be a valid UUID.' },
+          { status: 400 }
+        );
+      }
     }
 
     let funding;
@@ -138,7 +168,19 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
-    console.error('API v1 funding error:', error);
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('API v1 funding error:', error);
+    }
+    
+    // Check for specific database errors
+    if (error instanceof Error && error.message.includes('not found')) {
+      return NextResponse.json(
+        { error: 'Resource not found' },
+        { status: 404 }
+      );
+    }
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
