@@ -13,25 +13,27 @@ interface DashboardClientProps {
 
 export default function DashboardClient({ user, pitches }: DashboardClientProps) {
   const getStatusBadge = (status: string) => {
+    const statusLower = status.toLowerCase();
     const styles: Record<string, string> = {
       pending: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
       analyzing: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
       approved: 'bg-green-500/10 text-green-400 border-green-500/20',
       rejected: 'bg-red-500/10 text-red-400 border-red-500/20',
       conditional: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+      funded: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
     };
 
     return (
-      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${styles[status] || styles.pending}`}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${styles[statusLower] || styles.pending}`}>
+        {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
       </span>
     );
   };
 
   const stats = {
     total: pitches.length,
-    approved: pitches.filter(p => p.status === 'approved').length,
-    analyzing: pitches.filter(p => p.status === 'analyzing').length,
+    approved: pitches.filter(p => p.status === 'APPROVED').length,
+    analyzing: pitches.filter(p => p.status === 'ANALYZING').length,
     funded: pitches.filter(p => p.funding).length,
   };
 
