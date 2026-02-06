@@ -1,11 +1,8 @@
 // M&A Agent: Acquirer Matcher
 // Identifies and ranks potential acquirers (strategic, PE, SPACs)
 
-import OpenAI from 'openai';
+import { createOptimizedClient } from '../../ai-client';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export interface AcquirerProfile {
   name: string;
@@ -114,20 +111,20 @@ Format as JSON:
   "redFlags": ["Watch for lowball offers", "Avoid acquirers with poor integration track record"]
 }`;
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    messages: [
-      {
-        role: 'system',
-        content: 'You are an M&A advisor specializing in tech acquisitions. Provide detailed, actionable acquirer lists.',
-      },
-      { role: 'user', content: prompt },
-    ],
+  // Use Gemini for analysis (50% cheaper than OpenAI)
+  const client = createOptimizedClient('analysis');
+  const response = await client.chat([
+    {
+      role: 'system',
+      content: 'You are an M&A advisor specializing in tech acquisitions. Provide detailed, actionable acquirer lists.',
+    },
+    { role: 'user', content: prompt },
+  ], {
     temperature: 0.3,
-    response_format: { type: 'json_object' },
+    jsonMode: true,
   });
 
-  const result = JSON.parse(completion.choices[0].message.content || '{}');
+  const result = JSON.parse(response.content);
 
   return {
     topAcquirers: result.topAcquirers || [],

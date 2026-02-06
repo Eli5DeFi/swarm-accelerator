@@ -1,11 +1,8 @@
 // M&A Agent: Deal Structurer
 // Designs optimal deal structure and negotiation strategy
 
-import OpenAI from 'openai';
+import { createOptimizedClient } from '../../ai-client';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export interface DealStructure {
   totalValue: {
@@ -159,21 +156,21 @@ Task: Design optimal deal structure considering:
 
 Provide detailed deal structure optimized for maximum value and minimum risk.`;
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    messages: [
-      {
-        role: 'system',
-        content:
-          'You are an M&A structuring expert. Design deals that maximize value while protecting all parties.',
-      },
-      { role: 'user', content: prompt },
-    ],
+  // Use Gemini for analysis (50% cheaper than OpenAI)
+  const client = createOptimizedClient('analysis');
+  const response = await client.chat([
+    {
+      role: 'system',
+      content:
+        'You are an M&A structuring expert. Design deals that maximize value while protecting all parties.',
+    },
+    { role: 'user', content: prompt },
+  ], {
     temperature: 0.3,
-    response_format: { type: 'json_object' },
+    jsonMode: true,
   });
 
-  const result = JSON.parse(completion.choices[0].message.content || '{}');
+  const result = JSON.parse(response.content);
 
   return {
     structure: result.structure || {},

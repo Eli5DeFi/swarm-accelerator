@@ -1,11 +1,7 @@
 // Matching Engine: Project Analyzer
 // Analyzes projects seeking funding and creates investment profile
 
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { createOptimizedClient } from '../../ai-client';
 
 export interface ProjectProfile {
   id: string;
@@ -161,21 +157,21 @@ Format as JSON:
   "exitScenarios": ["Scenario 1", "Scenario 2", ...]
 }`;
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    messages: [
-      {
-        role: 'system',
-        content:
-          'You are a senior investment analyst. Create thorough, realistic investment profiles.',
-      },
-      { role: 'user', content: prompt },
-    ],
+  // Use Gemini for analysis (50% cheaper than OpenAI)
+  const client = createOptimizedClient('analysis');
+  const response = await client.chat([
+    {
+      role: 'system',
+      content:
+        'You are a senior investment analyst. Create thorough, realistic investment profiles.',
+    },
+    { role: 'user', content: prompt },
+  ], {
     temperature: 0.3,
-    response_format: { type: 'json_object' },
+    jsonMode: true,
   });
 
-  const analysis = JSON.parse(completion.choices[0].message.content || '{}');
+  const analysis = JSON.parse(response.content);
 
   return {
     id: projectData.id || '',
@@ -268,20 +264,20 @@ Provide:
 
 Format as JSON.`;
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    messages: [
-      {
-        role: 'system',
-        content: 'You are an investment matching AI. Score matches conservatively but fairly.',
-      },
-      { role: 'user', content: prompt },
-    ],
+  // Use Gemini for matching analysis (50% cheaper)
+  const client = createOptimizedClient('analysis');
+  const response = await client.chat([
+    {
+      role: 'system',
+      content: 'You are an investment matching AI. Score matches conservatively but fairly.',
+    },
+    { role: 'user', content: prompt },
+  ], {
     temperature: 0.2,
-    response_format: { type: 'json_object' },
+    jsonMode: true,
   });
 
-  const result = JSON.parse(completion.choices[0].message.content || '{}');
+  const result = JSON.parse(response.content);
 
   return {
     overall: result.overall || 0,

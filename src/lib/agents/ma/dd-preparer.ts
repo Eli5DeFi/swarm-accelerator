@@ -1,11 +1,8 @@
 // M&A Agent: Due Diligence Preparer
 // Creates comprehensive data room checklist and exit readiness scorecard
 
-import OpenAI from 'openai';
+import { createOptimizedClient } from '../../ai-client';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export interface DataRoomSection {
   category: string;
@@ -127,21 +124,21 @@ Task: Create comprehensive due diligence preparation plan:
 
 Format as JSON with detailed checklists.`;
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    messages: [
-      {
-        role: 'system',
-        content:
-          'You are a due diligence expert. Provide thorough, practical checklists that prepare companies for acquisition.',
-      },
-      { role: 'user', content: prompt },
-    ],
+  // Use Gemini for analysis (50% cheaper than OpenAI)
+  const client = createOptimizedClient('analysis');
+  const response = await client.chat([
+    {
+      role: 'system',
+      content:
+        'You are a due diligence expert. Provide thorough, practical checklists that prepare companies for acquisition.',
+    },
+    { role: 'user', content: prompt },
+  ], {
     temperature: 0.3,
-    response_format: { type: 'json_object' },
+    jsonMode: true,
   });
 
-  const result = JSON.parse(completion.choices[0].message.content || '{}');
+  const result = JSON.parse(response.content);
 
   return {
     dataRoomChecklist: result.dataRoomChecklist || [],

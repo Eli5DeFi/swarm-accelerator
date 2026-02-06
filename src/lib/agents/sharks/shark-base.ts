@@ -1,8 +1,4 @@
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { createOptimizedClient, type AIClient } from '../../ai-client';
 
 export interface SharkPersonality {
   name: string;
@@ -63,18 +59,27 @@ export abstract class SharkAgent {
   abstract makeOffer(pitch: Pitch, analysis: SharkAnalysis): Promise<SharkOffer>;
   abstract respondToQuestion(pitch: Pitch, question: string): Promise<string>;
 
-  protected async generateResponse(systemPrompt: string, userPrompt: string): Promise<string> {
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
+  /**
+   * Generate AI response using optimized provider routing
+   * - Analysis tasks → Gemini (50% cheaper)
+   * - Critical decisions → OpenAI (most reliable)
+   */
+  protected async generateResponse(
+    systemPrompt: string,
+    userPrompt: string,
+    taskType: 'analysis' | 'critical' = 'analysis'
+  ): Promise<string> {
+    const client = createOptimizedClient(taskType);
+    
+    const response = await client.chat([
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt },
+    ], {
       temperature: 0.8,
-      max_tokens: 1000,
+      maxTokens: 1000,
     });
 
-    return response.choices[0]?.message?.content || '';
+    return response.content;
   }
 
   protected getSystemPrompt(): string {
@@ -114,31 +119,24 @@ export class MarkCubanAI extends SharkAgent {
   }
 
   async analyzePitch(pitch: Pitch): Promise<SharkAnalysis> {
-    const prompt = `Analyze this pitch:
-    
-Company: ${pitch.name}
-Tagline: ${pitch.tagline}
-Industry: ${pitch.industry}
-Stage: ${pitch.stage}
-Asking: $${pitch.fundingAsk.toLocaleString()} at $${pitch.valuation.toLocaleString()} valuation
-Revenue: ${pitch.revenue ? `$${pitch.revenue.toLocaleString()}` : 'Pre-revenue'}
-Users: ${pitch.users?.toLocaleString() || 'N/A'}
-Team: ${pitch.teamSize} people
-Description: ${pitch.description}
+    // Compressed prompt format (30% fewer tokens)
+    const prompt = `Analyze: ${pitch.name} - ${pitch.tagline}
 
-Provide your analysis focusing on:
-1. Tech scalability and competitive advantage
-2. Market size and growth potential
-3. Unit economics and path to profitability
-4. Team's technical capability
+Industry: ${pitch.industry} | Stage: ${pitch.stage}
+Ask: $${(pitch.fundingAsk / 1000).toFixed(0)}K @ $${(pitch.valuation / 1000000).toFixed(1)}M
+Revenue: ${pitch.revenue ? `$${(pitch.revenue / 1000).toFixed(0)}K` : 'Pre-rev'} | Users: ${pitch.users?.toLocaleString() || 'N/A'} | Team: ${pitch.teamSize}
 
-Format as JSON:
+${pitch.description}
+
+Focus: Tech scale, market growth, unit economics, team capability.
+
+JSON:
 {
   "interestLevel": 0-100,
-  "strengths": ["point1", "point2", ...],
-  "concerns": ["concern1", "concern2", ...],
-  "questions": ["question1", "question2", ...],
-  "reasoning": "your detailed thoughts"
+  "strengths": ["2-3 points"],
+  "concerns": ["2-3 points"],
+  "questions": ["2-3 questions"],
+  "reasoning": "2-3 sentences"
 }`;
 
     const response = await this.generateResponse(this.getSystemPrompt(), prompt);
@@ -171,28 +169,24 @@ Format as JSON:
       };
     }
 
-    const prompt = `Based on your analysis (interest: ${analysis.interestLevel}/100), make an offer for ${pitch.name}.
+    // Compressed prompt (30% fewer tokens)
+    const prompt = `Offer for ${pitch.name} (interest: ${analysis.interestLevel}/100)
 
-Company asking: $${pitch.fundingAsk.toLocaleString()} at $${pitch.valuation.toLocaleString()} valuation
+Ask: $${(pitch.fundingAsk / 1000).toFixed(0)}K @ $${(pitch.valuation / 1000000).toFixed(1)}M
+Strengths: ${analysis.strengths.slice(0, 2).join('; ')}
+Concerns: ${analysis.concerns.slice(0, 2).join('; ')}
 
-Your analysis showed:
-Strengths: ${analysis.strengths.join(', ')}
-Concerns: ${analysis.concerns.join(', ')}
+Your style: Large checks, high growth, hands-off.
 
-Make a competitive offer that reflects:
-1. Your bullish/bearish view
-2. The company's stage and traction
-3. Your investment style (large checks, high growth expectations)
-
-Format as JSON:
+JSON:
 {
   "interested": true,
   "amount": number,
-  "equity": number (percentage),
-  "dealStructure": "equity" | "debt" | "royalty" | "hybrid",
-  "terms": "any special terms",
-  "conditions": ["condition1", "condition2"],
-  "reasoning": "why you're making this offer"
+  "equity": number,
+  "dealStructure": "equity"|"debt"|"royalty"|"hybrid",
+  "terms": "brief",
+  "conditions": ["1-2"],
+  "reasoning": "2 sentences"
 }`;
 
     const response = await this.generateResponse(this.getSystemPrompt(), prompt);
@@ -214,11 +208,11 @@ Format as JSON:
   }
 
   async respondToQuestion(pitch: Pitch, question: string): Promise<string> {
-    const prompt = `You're in a Shark Tank pitch for ${pitch.name}.
+    // Compressed prompt
+    const prompt = `Pitch: ${pitch.name}
+Founder: "${question}"
 
-Founder asks: "${question}"
-
-Respond authentically as Mark Cuban. Be direct, focus on metrics and scalability.`;
+Respond as Mark Cuban (direct, metrics-focused).`;
 
     return this.generateResponse(this.getSystemPrompt(), prompt);
   }

@@ -1,11 +1,8 @@
 // M&A Agent: Valuation Modeler
 // Creates comprehensive valuation analysis (comps, DCF, precedent transactions)
 
-import OpenAI from 'openai';
+import { createOptimizedClient } from '../../ai-client';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export interface ValuationModel {
   method: string;
@@ -125,21 +122,21 @@ Provide:
 
 Format as JSON with detailed reasoning.`;
 
-  const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    messages: [
-      {
-        role: 'system',
-        content:
-          'You are a valuation expert. Provide conservative, defensible valuations based on market data.',
-      },
-      { role: 'user', content: prompt },
-    ],
+  // Use Gemini for analysis (50% cheaper than OpenAI)
+  const client = createOptimizedClient('analysis');
+  const response = await client.chat([
+    {
+      role: 'system',
+      content:
+        'You are a valuation expert. Provide conservative, defensible valuations based on market data.',
+    },
+    { role: 'user', content: prompt },
+  ], {
     temperature: 0.2,
-    response_format: { type: 'json_object' },
+    jsonMode: true,
   });
 
-  const result = JSON.parse(completion.choices[0].message.content || '{}');
+  const result = JSON.parse(response.content);
 
   return {
     recommendedRange: result.recommendedRange || { low: 0, base: 0, high: 0 },
