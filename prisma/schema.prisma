@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -32,6 +32,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   startups      Startup[] // User's pitches
+  memories      Memory[]
+  memorySearches MemorySearch[]
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -115,6 +117,7 @@ model Startup {
   marketingCampaigns MarketingCampaign[]
   agentActivities AgentActivity[]
   funding       Funding?  // Accepted funding deal
+  memories      Memory[]
   
   @@index([status])
   @@index([createdAt])
@@ -724,6 +727,68 @@ enum SettlementMethod {
   ON_CHAIN
   ESCROW
   MANUAL
+}
+
+// ============================================
+// Semantic Memory System
+// ============================================
+
+model Memory {
+  id              String   @id @default(cuid())
+  
+  content         String   // The actual memory text
+  embedding       String?  // JSON array of embedding vector
+  
+  memoryType      String   @default("evaluation") // evaluation, pattern, insight, lesson
+  
+  // Entity linking
+  entityId        String?  // ID of related entity (startupId, analysisId, etc.)
+  entityType      String?  // "startup", "analysis", "agent", "decision"
+  
+  // Context
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  startupId       String?
+  startup         Startup? @relation(fields: [startupId], references: [id], onDelete: SetNull)
+  
+  metadata        Json?    // Additional context (agent name, scores, tags, etc.)
+  
+  // Retrieval optimization
+  relevanceScore  Float?   // Weighted score for ranking
+  accessCount     Int      @default(0)
+  lastAccessedAt  DateTime?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([memoryType])
+  @@index([entityId, entityType])
+  @@index([userId])
+  @@index([startupId])
+  @@index([createdAt])
+  @@index([relevanceScore])
+}
+
+model MemorySearch {
+  id              String   @id @default(cuid())
+  
+  query           String   // Search query text
+  queryEmbedding  String?  // JSON array of query embedding
+  
+  resultCount     Int      @default(0)
+  topResultIds    String[] // IDs of top matching memories
+  averageScore    Float?   // Average similarity score
+  
+  context         Json?    // Context at search time
+  
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  createdAt       DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
 }
 
 // ============================================
