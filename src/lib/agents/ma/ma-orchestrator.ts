@@ -1,5 +1,6 @@
 // M&A Orchestrator: Coordinates all M&A agents for comprehensive exit analysis
 
+import { logger } from '@/lib/logger';
 import { matchAcquirers, type AcquirerMatchResult } from './acquirer-matcher';
 import { modelValuation, type ValuationResult } from './valuation-modeler';
 import {
@@ -97,7 +98,7 @@ export interface ExitAnalysisReport {
 export async function orchestrateExitAnalysis(
   input: ExitAnalysisInput
 ): Promise<ExitAnalysisReport> {
-  console.log('[M&A Orchestrator] Starting comprehensive exit analysis...');
+  logger.info('[M&A Orchestrator] Starting comprehensive exit analysis...');
 
   // Run all agents in parallel (except deal structuring which needs valuation)
   const [acquirers, valuation, dueDiligence] = await Promise.all([
@@ -147,9 +148,9 @@ export async function orchestrateExitAnalysis(
     }),
   ]);
 
-  console.log('[M&A Orchestrator] Acquirer matching complete');
-  console.log('[M&A Orchestrator] Valuation modeling complete');
-  console.log('[M&A Orchestrator] Due diligence prep complete');
+  logger.info('[M&A Orchestrator] Acquirer matching complete');
+  logger.info('[M&A Orchestrator] Valuation modeling complete');
+  logger.info('[M&A Orchestrator] Due diligence prep complete');
 
   // Agent 4: Structure deal (needs valuation results)
   const dealStructure = await structureDeal({
@@ -165,7 +166,7 @@ export async function orchestrateExitAnalysis(
     profitability: input.ebitda > 0,
   });
 
-  console.log('[M&A Orchestrator] Deal structuring complete');
+  logger.info('[M&A Orchestrator] Deal structuring complete');
 
   // Synthesize executive summary
   const executiveSummary = {
@@ -236,7 +237,7 @@ export async function orchestrateExitAnalysis(
     },
   ];
 
-  console.log('[M&A Orchestrator] Analysis complete!');
+  logger.info('[M&A Orchestrator] Analysis complete!');
 
   return {
     executiveSummary,

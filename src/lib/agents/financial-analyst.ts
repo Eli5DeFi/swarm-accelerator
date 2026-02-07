@@ -1,4 +1,5 @@
 import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { logger } from "@/lib/logger";
 import { z } from "zod";
 import type { Startup } from "@prisma/client";
 import { OptimizedBaseAgent } from "./optimized-base-agent";
@@ -62,7 +63,7 @@ export class FinancialAnalystAgent extends OptimizedBaseAgent {
             tagline: startup.tagline,
           });
           
-          console.log(`[FinancialAnalyst] ✅ Analysis complete (model: ${this.getModelName()})`);
+          logger.info(`[FinancialAnalyst] ✅ Analysis complete (model: ${this.getModelName()})`);
           return result as FinancialAnalysis;
         } catch (error) {
           console.error("Financial analysis failed:", error);

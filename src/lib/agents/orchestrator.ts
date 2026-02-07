@@ -1,4 +1,5 @@
 import type { Startup } from "@prisma/client";
+import { logger } from "@/lib/logger";
 import { FinancialAnalystAgent, type FinancialAnalysis } from "./financial-analyst";
 import { TechnicalDDAgent, type TechnicalAnalysis } from "./technical-dd";
 import { MarketResearchAgent, type MarketAnalysis } from "./market-research";
@@ -74,8 +75,8 @@ export class AnalysisOrchestrator {
       const selectedAgents = selectAgents(startup);
       const agentBreakdown = getAgentBreakdown(startup);
       
-      console.log(`[Orchestrator] Spawning ${agentBreakdown.total} agents for ${startup.name}`);
-      console.log(`[Orchestrator] Cost estimate: $${agentBreakdown.estimatedCost.toFixed(2)}`);
+      logger.info(`[Orchestrator] Spawning ${agentBreakdown.total} agents for ${startup.name}`);
+      logger.info(`[Orchestrator] Cost estimate: $${agentBreakdown.estimatedCost.toFixed(2)}`);
       
       // 4. Run core agents (always)
       const [financial, technical, market, legal] = await Promise.all([

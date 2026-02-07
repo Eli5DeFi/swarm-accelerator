@@ -11,6 +11,7 @@
  * Memory: Searches past evaluations for relevant context
  */
 
+import { logger } from "@/lib/logger";
 import type { Startup } from "@prisma/client";
 import { FinancialAnalystAgent, type FinancialAnalysis } from "./financial-analyst";
 import { TechnicalDDAgent, type TechnicalAnalysis } from "./technical-dd";
@@ -108,8 +109,8 @@ export class OptimizedAnalysisOrchestrator {
       });
       
       if (relevantMemories.length > 0) {
-        console.log(`[Orchestrator] Found ${relevantMemories.length} relevant past evaluations`);
-        console.log(`[Orchestrator] Average similarity: ${(relevantMemories.reduce((sum, m) => sum + m.score, 0) / relevantMemories.length * 100).toFixed(1)}%`);
+        logger.info(`[Orchestrator] Found ${relevantMemories.length} relevant past evaluations`);
+        logger.info(`[Orchestrator] Average similarity: ${(relevantMemories.reduce((sum, m) => sum + m.score, 0) / relevantMemories.length * 100).toFixed(1)}%`);
       }
       */
       const relevantMemories: any[] = []; // Placeholder until PostgreSQL migration
@@ -118,8 +119,8 @@ export class OptimizedAnalysisOrchestrator {
       const selectedAgents = selectAgents(startup);
       const agentBreakdown = getAgentBreakdown(startup);
       
-      console.log(`[Orchestrator] Spawning ${agentBreakdown.total} agents in PARALLEL`);
-      console.log(`[Orchestrator] Cost estimate: $${agentBreakdown.estimatedCost.toFixed(2)}`);
+      logger.info(`[Orchestrator] Spawning ${agentBreakdown.total} agents in PARALLEL`);
+      logger.info(`[Orchestrator] Cost estimate: $${agentBreakdown.estimatedCost.toFixed(2)}`);
       
       // 5. Build context from semantic memory (if available)
       let memoryContext = '';
@@ -128,7 +129,7 @@ export class OptimizedAnalysisOrchestrator {
         memoryContext += relevantMemories
           .map((m, idx) => `${idx + 1}. ${m.content.slice(0, 300)}... (Score: ${(m.score * 100).toFixed(0)}%)`)
           .join('\n\n');
-        console.log(`[Orchestrator] Injecting ${memoryContext.length} chars of historical context`);
+        logger.info(`[Orchestrator] Injecting ${memoryContext.length} chars of historical context`);
       }
       
       // 6. Build ALL agent promises immediately (no waiting)
@@ -189,7 +190,7 @@ export class OptimizedAnalysisOrchestrator {
       }
       
       // 5. Execute ALL agents in parallel (Promise.allSettled for fault tolerance)
-      console.log(`[Orchestrator] Executing ${allAgentPromises.length} agents in parallel...`);
+      logger.info(`[Orchestrator] Executing ${allAgentPromises.length} agents in parallel...`);
       const results = await Promise.allSettled(allAgentPromises);
       
       // 6. Extract results (handle failures gracefully)
@@ -244,7 +245,7 @@ export class OptimizedAnalysisOrchestrator {
         (analysisCompletedAt.getTime() - analysisStartedAt.getTime()) / 1000
       );
       
-      console.log(`[Orchestrator] Analysis completed in ${analysisDuration}s`);
+      logger.info(`[Orchestrator] Analysis completed in ${analysisDuration}s`);
       
       // 9. Save analysis to database
       const createdAnalysis = await prisma.analysis.create({
@@ -291,7 +292,7 @@ export class OptimizedAnalysisOrchestrator {
         keyStrengths: synthesis.keyStrengths,
         keyConcerns: synthesis.keyConcerns,
       });
-      console.log(`[Orchestrator] Stored evaluation in semantic memory`);
+      logger.info(`[Orchestrator] Stored evaluation in semantic memory`);
       */
       
       return {

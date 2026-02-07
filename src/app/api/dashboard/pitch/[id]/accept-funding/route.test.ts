@@ -6,6 +6,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST } from './route';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { getOfferById, acceptOffer } from '@/lib/services/investment-offers';
+import type { InvestmentOffer } from '@/lib/services/investment-offers';
 
 // Mock auth and prisma
 vi.mock('@/lib/auth', () => ({
@@ -22,6 +24,12 @@ vi.mock('@/lib/prisma', () => ({
       create: vi.fn(),
     },
   },
+}));
+
+// Mock investment offers service
+vi.mock('@/lib/services/investment-offers', () => ({
+  getOfferById: vi.fn(),
+  acceptOffer: vi.fn(),
 }));
 
 describe('POST /api/dashboard/pitch/[id]/accept-funding', () => {
@@ -76,6 +84,9 @@ describe('POST /api/dashboard/pitch/[id]/accept-funding', () => {
         createdAt: new Date(),
       },
     } as any);
+
+    // Mock offer not found
+    vi.mocked(getOfferById).mockResolvedValue(null);
 
     const request = new Request('http://localhost:3000/api/dashboard/pitch/123/accept-funding', {
       method: 'POST',
@@ -143,6 +154,24 @@ describe('POST /api/dashboard/pitch/[id]/accept-funding', () => {
       },
     } as any);
 
+    // Mock the offer
+    const mockOffer: InvestmentOffer = {
+      id: 'offer_1',
+      pitchId: 'pitch-1',
+      offerAmount: 80000,
+      equity: 15,
+      dealType: 'SAFE',
+      terms: 'Standard SAFE terms',
+      investor: 'AI Ventures',
+      investorType: 'AI',
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      status: 'active',
+      createdAt: new Date().toISOString(),
+    };
+
+    vi.mocked(getOfferById).mockResolvedValue(mockOffer);
+    vi.mocked(acceptOffer).mockResolvedValue(mockOffer);
+
     const mockFunding = {
       id: 'funding-1',
       startupId: 'pitch-1',
@@ -184,9 +213,10 @@ describe('POST /api/dashboard/pitch/[id]/accept-funding', () => {
   });
 
   it('should create funding with offer_2 parameters', async () => {
+    const pitchId = '660e8400-e29b-41d4-a716-446655440001';
     vi.mocked(auth).mockResolvedValue({ user: { id: 'user-1' } } as any);
     vi.mocked(prisma.startup.findUnique).mockResolvedValue({
-      id: 'pitch-1',
+      id: pitchId,
       analysis: {
         recommendation: 'APPROVED',
         overallScore: 90,
@@ -197,9 +227,27 @@ describe('POST /api/dashboard/pitch/[id]/accept-funding', () => {
       funding: null,
     } as any);
 
+    // Mock offer_2
+    const mockOffer: InvestmentOffer = {
+      id: `offer_${pitchId}_2`,
+      pitchId: pitchId,
+      offerAmount: 100000,
+      equity: 20,
+      dealType: 'Equity',
+      terms: 'Equity round terms',
+      investor: 'Premium VC',
+      investorType: 'VC',
+      expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+      status: 'active',
+      createdAt: new Date().toISOString(),
+    };
+
+    vi.mocked(getOfferById).mockResolvedValue(mockOffer);
+    vi.mocked(acceptOffer).mockResolvedValue(mockOffer);
+
     const mockFunding = {
       id: 'funding-1',
-      startupId: 'pitch-1',
+      startupId: pitchId,
       dealAmount: 100000, // 100% of fundingAsk
       equityPercent: 20,
       dealType: 'Equity',
@@ -218,10 +266,10 @@ describe('POST /api/dashboard/pitch/[id]/accept-funding', () => {
 
     const request = new Request('http://localhost:3000/api/dashboard/pitch/123/accept-funding', {
       method: 'POST',
-      body: JSON.stringify({ offerId: 'offer_pitch-1_2' }), // Use dynamic offer ID
+      body: JSON.stringify({ offerId: `offer_${pitchId}_2` }), // Use dynamic offer ID
     });
 
-    const params = Promise.resolve({ id: 'pitch-1' });
+    const params = Promise.resolve({ id: pitchId });
     const response = await POST(request, { params });
     const data = await response.json();
 
@@ -244,6 +292,24 @@ describe('POST /api/dashboard/pitch/[id]/accept-funding', () => {
         createdAt: new Date(),
       },
     } as any);
+
+    // Mock the offer
+    const mockOffer: InvestmentOffer = {
+      id: 'offer_1',
+      pitchId: 'pitch-1',
+      offerAmount: 80000,
+      equity: 15,
+      dealType: 'SAFE',
+      terms: 'Standard SAFE terms',
+      investor: 'AI Ventures',
+      investorType: 'AI',
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      status: 'active',
+      createdAt: new Date().toISOString(),
+    };
+
+    vi.mocked(getOfferById).mockResolvedValue(mockOffer);
+    vi.mocked(acceptOffer).mockResolvedValue(mockOffer);
 
     let capturedMilestones: any[] = [];
     vi.mocked(prisma.funding.create).mockImplementation(async (args: any) => {

@@ -2,6 +2,7 @@
 // Detects if request is from AI agent or human, applies different rate limits & pricing
 
 import { NextRequest, NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 
 export interface AgentContext {
   isAgent: boolean;
@@ -212,7 +213,7 @@ export function withAgentDetection(
 export function trackAgentUsage(context: AgentContext, endpoint: string): void {
   // In production: send to analytics service (Mixpanel, Amplitude, etc.)
   
-  console.log('[Agent Analytics]', {
+  logger.info('[Agent Analytics]', {
     isAgent: context.isAgent,
     agentType: context.agentType,
     tier: context.tier,

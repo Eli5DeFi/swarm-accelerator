@@ -1,6 +1,7 @@
 // src/lib/council/debate-orchestrator.ts
 
 import Anthropic from '@anthropic-ai/sdk';
+import { logger } from '@/lib/logger';
 
 interface DebateAgent {
   id: string;
@@ -95,7 +96,7 @@ export class DebateOrchestrator {
     transcript: DebateMessage[];
     agents: DebateAgent[];
   }> {
-    console.log('🎭 Starting Live AI Council Debate...');
+    logger.info('🎭 Starting Live AI Council Debate...');
 
     // Broadcast initial state
     this.broadcast({
@@ -129,7 +130,7 @@ export class DebateOrchestrator {
   }
 
   private async initialReactions(pitch: any) {
-    console.log('\n📊 Phase 1: Initial Reactions');
+    logger.info('\n📊 Phase 1: Initial Reactions');
 
     this.broadcast({
       type: 'phase_change',
@@ -212,7 +213,7 @@ Sentiment scale: -1 (very negative) to 1 (very positive)`;
   }
 
   private async questioningRound(pitch: any) {
-    console.log('\n❓ Phase 2: Questioning Round');
+    logger.info('\n❓ Phase 2: Questioning Round');
 
     this.broadcast({
       type: 'phase_change',
@@ -291,7 +292,7 @@ Return as JSON array: ["Question 1", "Question 2"]`;
   }
 
   private async agentDebate(pitch: any) {
-    console.log('\n🗣️ Phase 3: Agent Debate');
+    logger.info('\n🗣️ Phase 3: Agent Debate');
 
     this.broadcast({
       type: 'phase_change',
@@ -392,7 +393,7 @@ Format:
   }
 
   private async buildConsensus(pitch: any) {
-    console.log('\n🤝 Phase 4: Building Consensus');
+    logger.info('\n🤝 Phase 4: Building Consensus');
 
     this.broadcast({
       type: 'phase_change',
@@ -438,7 +439,7 @@ Format:
     const decision: 'APPROVED' | 'REJECTED' = yesVotes > noVotes ? 'APPROVED' : 'REJECTED';
     const confidence = Math.abs(yesVotes - noVotes) / this.agents.length;
 
-    console.log(`\n✅ Final Decision: ${decision} (${yesVotes} YES, ${noVotes} NO, ${maybeVotes} MAYBE)`);
+    logger.info(`\n✅ Final Decision: ${decision} (${yesVotes} YES, ${noVotes} NO, ${maybeVotes} MAYBE)`);
 
     return {
       decision,
