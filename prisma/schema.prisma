@@ -118,6 +118,11 @@ model Startup {
   agentActivities    AgentActivity[]
   funding            Funding? // Accepted funding deal
   memories           Memory[]
+  
+  // PPE (Predictive Pivot Engine)
+  assumptions        Assumption[]             @relation("StartupAssumptions")
+  failurePredictions FailurePrediction[]      @relation("StartupFailurePredictions")
+  pivotRecommendations PivotRecommendation[]  @relation("StartupPivotRecommendations")
 
   @@index([status])
   @@index([createdAt])
@@ -989,3 +994,107 @@ enum ApplicationStatus {
   ACCEPTED
   REJECTED
 }
+
+// ============================================
+// Predictive Pivot Engine (PPE)
+// ============================================
+
+model Assumption {
+  id          String   @id @default(cuid())
+  startupId   String
+  startup     Startup  @relation("StartupAssumptions", fields: [startupId], references: [id], onDelete: Cascade)
+  
+  type        String   // pricing, cac, market_size, sales_cycle, growth_rate, technical, competitive, regulatory, team, timing
+  statement   String   // "Developers will pay $50/month for code review"
+  value       String   // JSON (can be number or string) - "50" or "unknown"
+  unit        String?  // "dollars/month", "users", "months", etc.
+  confidence  Int      // 0-100
+  source      String   // pitch_deck, metrics, interview, validation
+  
+  isValidated Boolean  @default(false)
+  deviation   Float?   // % deviation from expected (if validated)
+  validatedAt DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([startupId])
+  @@index([type])
+  @@index([isValidated])
+  @@index([createdAt])
+}
+
+model FailurePrediction {
+  id                  String   @id @default(cuid())
+  startupId           String
+  startup             Startup  @relation("StartupFailurePredictions", fields: [startupId], references: [id], onDelete: Cascade)
+  
+  failureProbability  Int      // 0-100
+  timeToFailure       Int?     // months (if failure likely)
+  primaryReason       String   // Main risk factor description
+  riskFactors         String   // JSON array of RiskFactor objects
+  confidence          Int      // 0-100 (confidence in prediction)
+  
+  metricsSnapshot     String   // JSON: StartupMetrics at time of prediction
+  
+  createdAt           DateTime @default(now())
+  
+  @@index([startupId])
+  @@index([failureProbability])
+  @@index([createdAt])
+}
+
+model PivotRecommendation {
+  id                  String   @id @default(cuid())
+  startupId           String
+  startup             Startup  @relation("StartupPivotRecommendations", fields: [startupId], references: [id], onDelete: Cascade)
+  
+  pivotType           String   // pricing, target_customer, distribution, product_focus, business_model, market, technology
+  title               String   // "Lower Pricing to Self-Service Tier"
+  description         String   // 2-3 sentence description
+  rationale           String   // Why this pivot makes sense
+  successProbability  Int      // 0-100
+  estimatedRevenue    Int      // Expected monthly revenue after pivot
+  estimatedCost       Int      // Cost to execute pivot
+  timeline            Int      // Weeks to execute
+  
+  risks               String   // JSON array of risk strings
+  caseStudies         String   // JSON array of CaseStudy objects
+  metrics             String   // JSON: expectedMRR, expectedGrowthRate, expectedCAC, expectedRunwayExtension
+  
+  status              String   @default("suggested") // suggested, testing, accepted, rejected, implemented
+  acceptedAt          DateTime?
+  implementedAt       DateTime?
+  
+  simulations         PivotSimulation[]
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  @@index([startupId])
+  @@index([status])
+  @@index([successProbability])
+  @@index([createdAt])
+}
+
+model PivotSimulation {
+  id                  String              @id @default(cuid())
+  pivotId             String
+  pivot               PivotRecommendation @relation(fields: [pivotId], references: [id], onDelete: Cascade)
+  
+  scenariosRun        Int                 // 500, 1000, etc.
+  outcomes            String              // JSON: success/failure/breakeven percentages
+  projections         String              // JSON: Month 1/3/6/12 projections
+  riskAnalysis        String              // JSON: best/worst/most likely cases, variance
+  confidence          Int                 // 0-100
+  recommendation      String              // proceed, caution, avoid
+  
+  report              String?             // Generated simulation report (markdown)
+  
+  createdAt           DateTime @default(now())
+  
+  @@index([pivotId])
+  @@index([recommendation])
+  @@index([createdAt])
+}
+
