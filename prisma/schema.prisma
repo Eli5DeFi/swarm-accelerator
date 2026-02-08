@@ -1098,3 +1098,59 @@ model PivotSimulation {
   @@index([createdAt])
 }
 
+
+// ============================================
+// FBEWS (Founder Burnout Early Warning System)
+// ============================================
+
+model BurnoutSignal {
+  id          String   @id @default(cuid())
+  founderId   String
+  type        String   // SignalType enum (slack_sentiment, github_commits, etc.)
+  value       Float    // 0-100 normalized risk score
+  raw         String   // JSON: Original data for debugging
+  confidence  Float    // 0-100 data quality score
+  timestamp   DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([founderId, timestamp])
+  @@index([type])
+}
+
+model BurnoutPrediction {
+  id                    String   @id @default(cuid())
+  founderId             String
+  riskScore             Int      // 0-100
+  riskLevel             String   // RiskLevel enum: low/medium/high/critical
+  timeToBreakdownWeeks  Int?     // Null if low risk
+  primaryRiskFactors    String   // JSON: RiskFactor[] array
+  recommendations       String   // JSON: string[] array
+  signals               String   // JSON: SignalSummary object
+  confidence            Int      // 0-100 prediction confidence
+  predictedAt           DateTime @default(now())
+
+  interventions         Intervention[]
+
+  @@index([founderId, predictedAt])
+  @@index([riskLevel])
+  @@index([riskScore])
+}
+
+model Intervention {
+  id           String    @id @default(cuid())
+  founderId    String
+  predictionId String?
+  prediction   BurnoutPrediction? @relation(fields: [predictionId], references: [id], onDelete: SetNull)
+  type         String    // InterventionType enum (notification, check_in, urgent_meeting, etc.)
+  status       String    // InterventionStatus enum (scheduled, in_progress, completed, skipped, declined)
+  scheduledAt  DateTime
+  completedAt  DateTime?
+  outcome      String?   // InterventionOutcome enum (improved, stable, no_change, worsened, unknown)
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([founderId, status])
+  @@index([scheduledAt])
+  @@index([status])
+}
