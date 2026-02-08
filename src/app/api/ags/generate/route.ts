@@ -3,11 +3,21 @@
  * Generate new batch of AI startup ideas
  * 
  * Auth: Admin only (API key required)
+ * 
+ * @param request - NextRequest with API key header and count in body
+ * @returns Generated ideas with validation scores
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { IdeaGenerator } from '@/lib/ags/idea-generator';
+import { z } from 'zod';
+import { logger } from '@/lib/logger';
+
+// Validation schema
+const GenerateIdeasSchema = z.object({
+  count: z.number().int().min(1).max(100).default(10),
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,18 +43,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse request body
+    // Parse and validate request body
     const body = await request.json();
-    const count = body.count || 10;
-
-    if (count < 1 || count > 100) {
+    const validation = GenerateIdeasSchema.safeParse(body);
+    
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'Count must be between 1 and 100' },
+        { 
+          error: 'Invalid request body',
+          details: validation.error.issues 
+        },
         { status: 400 }
       );
     }
 
-    console.log(`🧬 Generating ${count} startup ideas...`);
+    const { count } = validation.data;
+
+    logger.log(`🧬 Generating ${count} startup ideas...`);
 
     // Generate ideas
     const generator = new IdeaGenerator();
@@ -94,12 +109,12 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      console.log(`  ✓ ${idea.name} (${score}/100) ${score >= 85 ? '⭐ VALIDATED' : ''}`);
+      logger.log(`  ✓ ${idea.name} (${score}/100) ${score >= 85 ? '⭐ VALIDATED' : ''}`);
     }
 
     const avgScore = Math.round(totalScore / count * 10) / 10;
 
-    console.log(`✅ Generated ${count} ideas, validated ${validatedCount}`);
+    logger.log(`✅ Generated ${count} ideas, validated ${validatedCount}`);
 
     return NextResponse.json({
       success: true,
@@ -111,9 +126,23 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('AGS generation error:', error);
+    logger.error('AGS generation error:', error);
+    
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { 
+          error: 'Validation failed',
+          details: error.issues 
+        },
+        { status: 400 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to generate ideas', details: error instanceof Error ? error.message : String(error) },
+      { 
+        error: 'Failed to generate ideas', 
+        details: error instanceof Error ? error.message : String(error) 
+      },
       { status: 500 }
     );
   }
