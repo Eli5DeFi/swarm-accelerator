@@ -5,7 +5,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { POST } from './route';
 import { prisma } from '@/lib/prisma';
-import { IdeaGenerator } from '@/lib/ags/idea-generator';
 
 // Mock dependencies
 vi.mock('@/lib/prisma', () => ({
@@ -19,8 +18,15 @@ vi.mock('@/lib/prisma', () => ({
   },
 }));
 
+// Mock IdeaGenerator
+const mockGenerateBatch = vi.fn();
+const mockScoreIdea = vi.fn();
+
 vi.mock('@/lib/ags/idea-generator', () => ({
-  IdeaGenerator: vi.fn(),
+  IdeaGenerator: class {
+    generateBatch = mockGenerateBatch;
+    scoreIdea = mockScoreIdea;
+  },
 }));
 
 describe('POST /api/ags/generate', () => {
@@ -135,12 +141,8 @@ describe('POST /api/ags/generate', () => {
       competitiveAdvantage: 'First mover',
     };
 
-    const mockGenerator = {
-      generateBatch: vi.fn().mockResolvedValue([mockIdea]),
-      scoreIdea: vi.fn().mockResolvedValue(90),
-    };
-
-    vi.mocked(IdeaGenerator).mockImplementation(() => mockGenerator as any);
+    mockGenerateBatch.mockResolvedValue([mockIdea]);
+    mockScoreIdea.mockResolvedValue(90);
 
     vi.mocked(prisma.generatedIdea.create).mockResolvedValue({
       id: 'idea-1',
@@ -160,10 +162,9 @@ describe('POST /api/ags/generate', () => {
     });
 
     const response = await POST(request as any);
-    const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(mockGenerator.generateBatch).toHaveBeenCalledWith(10); // Default
+    expect(mockGenerateBatch).toHaveBeenCalledWith(10); // Default
   });
 
   it('should generate ideas successfully', async () => {
@@ -204,14 +205,10 @@ describe('POST /api/ags/generate', () => {
       },
     ];
 
-    const mockGenerator = {
-      generateBatch: vi.fn().mockResolvedValue(mockIdeas),
-      scoreIdea: vi.fn()
-        .mockResolvedValueOnce(90) // First idea: validated
-        .mockResolvedValueOnce(75), // Second idea: not validated
-    };
-
-    vi.mocked(IdeaGenerator).mockImplementation(() => mockGenerator as any);
+    mockGenerateBatch.mockResolvedValue(mockIdeas);
+    mockScoreIdea
+      .mockResolvedValueOnce(90) // First idea: validated
+      .mockResolvedValueOnce(75); // Second idea: not validated
 
     vi.mocked(prisma.generatedIdea.create)
       .mockResolvedValueOnce({
@@ -257,11 +254,7 @@ describe('POST /api/ags/generate', () => {
       tier: 'enterprise',
     } as any);
 
-    const mockGenerator = {
-      generateBatch: vi.fn().mockRejectedValue(new Error('LLM API error')),
-    };
-
-    vi.mocked(IdeaGenerator).mockImplementation(() => mockGenerator as any);
+    mockGenerateBatch.mockRejectedValue(new Error('LLM API error'));
 
     const request = new Request('http://localhost:3000/api/ags/generate', {
       method: 'POST',
@@ -302,15 +295,12 @@ describe('POST /api/ags/generate', () => {
       competitiveAdvantage: 'First',
     };
 
-    const mockGenerator = {
-      generateBatch: vi.fn().mockResolvedValue([mockIdea, mockIdea, mockIdea]),
-      scoreIdea: vi.fn()
-        .mockResolvedValueOnce(95)
-        .mockResolvedValueOnce(85)
-        .mockResolvedValueOnce(70),
-    };
+    mockGenerateBatch.mockResolvedValue([mockIdea, mockIdea, mockIdea]);
+    mockScoreIdea
+      .mockResolvedValueOnce(95)
+      .mockResolvedValueOnce(85)
+      .mockResolvedValueOnce(70);
 
-    vi.mocked(IdeaGenerator).mockImplementation(() => mockGenerator as any);
     vi.mocked(prisma.generatedIdea.create).mockResolvedValue({} as any);
 
     const request = new Request('http://localhost:3000/api/ags/generate', {
@@ -352,12 +342,8 @@ describe('POST /api/ags/generate', () => {
       competitiveAdvantage: 'CA',
     };
 
-    const mockGenerator = {
-      generateBatch: vi.fn().mockResolvedValue([mockIdea]),
-      scoreIdea: vi.fn().mockResolvedValue(88),
-    };
-
-    vi.mocked(IdeaGenerator).mockImplementation(() => mockGenerator as any);
+    mockGenerateBatch.mockResolvedValue([mockIdea]);
+    mockScoreIdea.mockResolvedValue(88);
     
     const createMock = vi.mocked(prisma.generatedIdea.create);
     createMock.mockResolvedValue({ id: 'idea-1' } as any);
@@ -407,12 +393,8 @@ describe('POST /api/ags/generate', () => {
       competitiveAdvantage: 'CA',
     };
 
-    const mockGenerator = {
-      generateBatch: vi.fn().mockResolvedValue([mockIdea]),
-      scoreIdea: vi.fn().mockResolvedValue(60), // Low score
-    };
-
-    vi.mocked(IdeaGenerator).mockImplementation(() => mockGenerator as any);
+    mockGenerateBatch.mockResolvedValue([mockIdea]);
+    mockScoreIdea.mockResolvedValue(60); // Low score
     
     const createMock = vi.mocked(prisma.generatedIdea.create);
     createMock.mockResolvedValue({ id: 'idea-1' } as any);

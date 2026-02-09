@@ -36,7 +36,7 @@ export function WalletButton() {
       });
 
       if (res.ok) {
-        console.log('Wallet linked successfully');
+        // Wallet linked successfully (no logging needed for user action)
         // Session will update automatically
       } else {
         const error = await res.json();

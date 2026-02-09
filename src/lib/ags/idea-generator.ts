@@ -75,7 +75,7 @@ export class IdeaGenerator {
    * Generate batch of ideas
    */
   async generateBatch(count: number = 10): Promise<StartupIdea[]> {
-    console.log(`Generating ${count} startup ideas...`);
+    // Ideas being generated (logged by route handler)
     
     const ideas = await Promise.all(
       Array(count).fill(0).map(() => this.generateIdea())

@@ -77,7 +77,7 @@ export interface DeFiAcceleratorReport {
 export async function orchestrateDeFiAccelerator(
   input: DeFiProtocolInput
 ): Promise<DeFiAcceleratorReport> {
-  console.log('[DeFi Orchestrator] Starting comprehensive analysis...');
+  // DeFi orchestration starting (no logger import in this file)
 
   // Run all agents in parallel
   const [tokenomics, security, liquidity] = await Promise.all([
@@ -118,7 +118,7 @@ export async function orchestrateDeFiAccelerator(
     }),
   ]);
 
-  console.log('[DeFi Orchestrator] All agents complete');
+  // DeFi orchestration complete (no logger import in this file)
 
   // Generate executive summary
   const securityScore = security.score;

@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    console.log(`✅ New AGS application: ${validated.name} → ${idea.name}`);
+    logger.log(`✅ New AGS application: ${validated.name} → ${idea.name}`);
 
     return NextResponse.json({
       success: true,
